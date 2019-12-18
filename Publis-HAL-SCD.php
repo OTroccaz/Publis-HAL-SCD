@@ -28,6 +28,56 @@ function antixss($input) {
   return htmlspecialchars(strip_tags($input), ENT_QUOTES);
 }
 
+function mise_en_evidence($phrase, $string, $deb, $fin) {
+  $non_letter_chars = '/[^\pL]/iu';
+  $words = preg_split($non_letter_chars, $phrase);
+
+  $search_words = array();
+  foreach ($words as $word) {
+    if (strlen($word) > 2 && !preg_match($non_letter_chars, $word)) {
+      $search_words[] = $word;
+    }
+  }
+
+  $search_words = array_unique($search_words);
+
+  $patterns = array(
+    /* à répéter pour chaque caractère accentué possible */
+    '/(ae|æ)/iu' => '(ae|æ)',
+    '/(oe|œ)/iu' => '(oe|œ)',
+    '/[aàáâãäåăãąā]/iu' => '[aàáâãäåăãąā]',
+		'/[bḃбБ]/iu' => '[bḃбБ]',
+    '/[cçčćĉċцЦ]/iu' => '[cçčćĉċцЦ]',
+		'/[dďḋđдД]/iu' => '[dďḋđдД]',
+    '/[eèéêëĕěėęēэЭ]/iu' => '[eèéêëĕěėęēэЭ]',
+		'/[fḟƒфФ]/iu' => '[fḟƒфФ]',
+		'/[gğĝġģгГ]/iu' => '[gğĝġģгГ]',
+		'/[hĥħ]/iu' => '[hĥħ]',
+    '/[iìíîïĩįīiiиИ]/iu' => '[iìíîïĩįīiiиИ]',
+		'/[jĵйЙ]/iu' => '[jĵйЙ]',
+		'/[kķк]/iu' => '[kķк]',
+		'/[lĺľļłлЛ]/iu' => '[lĺľļłлЛ]',
+		'/[mṁм]/iu' => '[mṁм]',
+    '/[nñńňņн]/iu' => '[nñńňņн]',
+    '/[oòóôõöőøōơ]/iu' => '[oòóôõöőøōơ]',
+		'/[pṗпП]/iu' => '[pṗпП]',
+		'/[rŕřŗ]/iu' => '[rŕřŗ]',
+    '/[sšśŝṡşș]/iu' => '[sšśŝṡşș]',
+		'/[tťṫţțŧт]/iu' => '[tťṫţțŧт]',
+    '/[uùúûüŭųūư]/iu' => '[uùúûüŭųūư]',
+		'/[vв]/iu' => '[vв]',
+    '/[wẃẁŵẅ]/iu' => '[wẃẁŵẅ]',
+		'/[yýÿỳŷ]/iu' => '[yýÿỳŷ]',
+    '/[zžźżзЗ]/iu' => '[zžźżзЗ]',
+  );
+
+  foreach ($search_words as $word) {
+    $search = preg_quote($word);
+    $search = preg_replace(array_keys($patterns), $patterns, $search);
+    return preg_replace('/\b' . $search . '(e?s)?\b/iu', $deb.'$0'.$fin, $string);
+  }
+}
+
 function wd_remove_accents($str, $charset='utf-8')
 {
     $str = htmlentities($str, ENT_NOQUOTES, $charset);
@@ -267,6 +317,7 @@ if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "") && strpos($_GET['a
 }
 
 //année n ou n+1 ?
+$qte = 0;
 if (date ('m') == 11 || date ('m') == 12) {
   $anneen = date('Y', time())+1;
   $url = "http://api.archives-ouvertes.fr/search/?wt=xml&q=collCode_s:".$collection_exp."&rows=100000&fq=producedDateY_i:".$anneen;
@@ -682,6 +733,7 @@ if ($typform == $form9s) {//formulaire de recherche complet
     while ($i >= $anneen - $nbanneesfs) {
       //on vérifie si ce n'est pas une année à exclure
       if (strpos($annee_excl, strval($i)) === false) {
+				$presbibUrl = "";
 				if ($presbib =="<br>") {$presbibUrl = "br";}
         $text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdoc."&typform=".$typform."&anneedeb=".$i."&anneefin=".$i."&titre=".$titre."&aut=".$aut."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&detail=".$detail."&affDoi=".$affDoi."&affIdh=".$affIdh."&ipas=".$ipas."&acc=noninit\">".$i."</a>&nbsp;&nbsp;&nbsp;\r\n";
       }
@@ -1638,10 +1690,19 @@ for ($k = $ideb; $k <= $ifin; $k++) {
     $titreaff2 = "<b><u>".ucwords($titre)."</u></b>";
     $titreaff3 = "<b><u>".strtoupper($titre)."</u></b>";
     $titreaff4 = "<b><u>".strtolower($titre)."</u></b>";
-    $autaff1 = "<b><u>".$aut."</u></b>";
-    $autaff2 = "<b><u>".prenomCompEntier($aut)."</u></b>";
-    $autaff3 = "<b><u>".strtoupper($aut)."</u></b>";
-    $autaff4 = "<b><u>".strtolower($aut)."</u></b>";
+    //$autaff1 = "<b><u>".$aut."</u></b>";
+		$autaff1 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $aut);
+		$autaff1 = mise_en_evidence(wd_remove_accents($autaff1), $autaff1, "<b><u>", "</u></b>");
+    //$autaff2 = "<b><u>".prenomCompEntier($aut)."</u></b>";
+		$autaff2 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , prenomCompEntier($aut));
+		$autaff2 = mise_en_evidence(wd_remove_accents($autaff2), $autaff2, "<b><u>", "</u></b>");
+    //$autaff3 = "<b><u>".strtoupper($aut)."</u></b>";
+		$autaff3 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , strtoupper($aut));
+		$autaff3 = mise_en_evidence(wd_remove_accents($autaff3), $autaff3, "<b><u>", "</u></b>");
+    //$autaff4 = "<b><u>".strtolower($aut)."</u></b>";
+		$autaff4 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , strtolower($aut));
+		$autaff4 = mise_en_evidence(wd_remove_accents($autaff4), $autaff4, "<b><u>", "</u></b>");
+	
     //si nom composé
     $postiret = strpos($aut,"-");
     $autg = "";
@@ -1652,10 +1713,13 @@ for ($k = $ideb; $k <= $ifin; $k++) {
       $autg = substr($aut,0,($postiret));
       $autd = substr($aut,($postiret+1),(strlen($aut)-$postiret));
       $autgd = ucfirst($autg)."-".ucfirst($autd);
-      $autaff5 = "<b><u>".$autgd."</u></b>";
+      //$autaff5 = "<b><u>".$autgd."</u></b>";
+			$autaff5 = mise_en_evidence(wd_remove_accents(str_replace(" ", "troliesp", $autgd)), str_replace(" ", "troliesp", $autgd), "<b><u>", "</u></b>");
     }
     //si recherche sur plusieurs auteurs
     $autaff = $auteurs[$i];
+		$autaff = str_replace(", ", ",", $autaff);
+		$autfin = "";
     if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "") || $listenominit2 != "") {
       if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "")) {
         //$auteur_exp_aff = wd_remove_accents(ucwords($_GET['auteur_exp']));
@@ -1674,23 +1738,39 @@ for ($k = $ideb; $k <= $ifin; $k++) {
           $autg = substr($autexp0,0,($postiret));
           $autd = substr($autexp0,($postiret+1),(strlen($autexp0)-$postiret));
           $autgd0 = ucfirst($autg)."-".ucfirst($autd);
-          $autgd1 = "<b><u>".$autgd0."</u></b>";
-          $autaff = str_replace($autgd0, $autgd1, $autaff);
+          //$autgd1 = "<b><u>".$autgd0."</u></b>";
+					//$autaff = str_replace($autgd0, $autgd1, $autaff);
+					$autgd0 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autgd0);
+					$autaff = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autaff);
+					$autaff = mise_en_evidence(wd_remove_accents($autgd0), $autaff, "<b><u>", "</u></b>");
         }
         //$autexp0 = ucwords(strtolower($autexp0));
-        $autexp1 = "<b><u>".$autexp0."</u></b>";
-        $autaff = str_replace($autexp0, $autexp1, $autaff);
+        //$autexp1 = "<b><u>".$autexp0."</u></b>";
+				//$autaff = str_replace($autexp0, $autexp1, $autaff);
+				$autexp0 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autexp0);
+				$autaff = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autaff);
+				$autaff = mise_en_evidence(wd_remove_accents($autexp0), $autaff, "<b><u>", "</u></b>");        
         $ii += 1;
       }
     }else{
-      $autaff = str_replace(array($aut, prenomCompEntier($aut), strtoupper($aut), strtolower($aut), $autgd),array($autaff1, $autaff2, $autaff3, $autaff4, $autaff5),$auteurs[$i]);
+			$autexp1 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $aut);
+			$autexp2 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , prenomCompEntier($aut));
+			$autexp3 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , strtoupper($aut));
+			$autexp4 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , strtolower($aut));
+			$autexp5 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autgd);
+			$autaff = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autaff);
+      $autaff = str_replace(array($autexp1, $autexp2, $autexp3, $autexp4, $autexp5),array($autaff1, $autaff2, $autaff3, $autaff4, $autaff5),$auteurs[$i]);
     }
     //si requête avec authIdHal_s
     if ($authidhal != "" & $authidhal_mev != "") {
-      $autaff = str_replace($authidhal_mev, "<b><u>".$authidhal_mev."</u></b>",$auteurs[$i]);
+      //$autaff = str_replace($authidhal_mev, "<b><u>".$authidhal_mev."</u></b>",$auteurs[$i]);
+			$authidhal_mev = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $authidhal_mev);
+			$auteurs[$i] = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $auteurs[$i]);
+			$autaff = mise_en_evidence(wd_remove_accents($authidhal_mev), $auteurs[$i], "<b><u>", "</u></b>");
     }
     //corrections
-    $autaff = str_replace(array("<b><u><b><u>","</b></u></b></u>"), array("<b><u>","</b></u>"), $autaff);
+    $autaff = str_replace(array("<b><u><b><u>","</b></u></b></u>","troliesp",","), array("<b><u>","</b></u>"," ",", "), $autaff);
+		$autaff = str_replace(array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf"), array(".", "-", "'", " ", "(", ")"), $autaff);
     $titreaff = str_replace(array($titre, ucfirst($titre), strtoupper($titre), strtolower($titre)),array($titreaff1, $titreaff2, $titreaff3, $titreaff4),$titrehref[$i]);
     $rvnp[$i] = str_replace(': . ', '', $rvnp[$i]);
     if (isset($_GET['presbib']) && ($_GET['presbib'] != "br")) {
@@ -1921,6 +2001,7 @@ if ($halid == "") {
     $ideb = ($ipas * $i) + 1;
     $ifin = $ideb + $ipas - 1;
     if ($ifin > $irec) {$ifin = $irec;}
+		$presbibUrl = "";
 		if ($presbib =="<br>") {$presbibUrl = "br";}
     $text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdocinit."&anneedeb=".$anneedeb."&anneefin=".$anneefin."&titre=".$titre."&aut=".$aut."&ipas=".$ipas."&ideb=".$ideb."&ifin=".$ifin."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&detail=".$detail."&typform=".$typform."&affDoi=".$affDoi."&affIdh=".$affIdh."&acc=noninit\">".$ideb."-".$ifin."</a>&nbsp;&nbsp;&nbsp;\r\n";
     $i++;
