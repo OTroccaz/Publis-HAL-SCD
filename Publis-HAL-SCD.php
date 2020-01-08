@@ -24,6 +24,21 @@ while (stripos($urlnet, "%3C") !== false) {
 }
 if ($redir == "oui") {header("Location: ".$urlnet);}
 
+function suppression($dossier, $age) {
+  $repertoire = opendir($dossier);
+    while(false !== ($fichier = readdir($repertoire)))
+    {
+      $chemin = $dossier."/".$fichier;
+      $age_fichier = time() - filemtime($chemin);
+      if($fichier != "." && $fichier != ".." && !is_dir($fichier) && $age_fichier > $age)
+      {
+      unlink($chemin);
+      //echo $chemin." - ".date ("F d Y H:i:s.", filemtime($chemin))."<br>";
+      }
+    }
+  closedir($repertoire);
+}
+
 function antixss($input) {
   return htmlspecialchars(strip_tags($input), ENT_QUOTES);
 }
@@ -146,6 +161,13 @@ function nomCompEntier($nom) {
   }
   return $nom;
 }
+
+//Suppression des fichiers du dossier HAL créés il y a plus d'une heure
+suppression("./HAL", 3600);
+
+//Unicité des fichiers CSV et RTF créés
+$unicite = time();
+
 //Constantes générales
 if (isset($_GET['lang']) && ($_GET['lang'] != "")) {
   $lang = htmlspecialchars($_GET['lang']);
@@ -1602,7 +1624,7 @@ if ($lim_aut != "") {
 }
 
 //export en CSV
-$Fnm1 = "./HAL/publisHAL.csv";
+$Fnm1 = "./HAL/publisHAL_".$unicite.".csv";
 $inF = fopen($Fnm1,"w");
 
 fseek($inF, 0);
@@ -1640,7 +1662,7 @@ fwrite($inF,$chaine.chr(13).chr(10));
 $chaine = "";
 
 //export en RTF
-$Fnm2 = "./HAL/publisHAL.rtf";
+$Fnm2 = "./HAL/publisHAL_".$unicite.".rtf";
 require_once ("./lib/phprtflite-1.2.0/lib/PHPRtfLite.php");
 
 PHPRtfLite::registerAutoloader();
@@ -2013,10 +2035,10 @@ fclose($inF);
 if ($halid == "") {
   if ($irec != 0) {
     //$text .= "<center><b><a target='_blank' href='http://".$_SERVER['HTTP_HOST']."/HAL/publisHAL.csv'>".$result6."</a></b>\r\n";
-    $text .= "<center><b><a target='_blank' href='./HAL/publisHAL.csv'>".$result6."</a></b>\r\n";
+    $text .= "<center><b><a target='_blank' href='./HAL/publisHAL_".$unicite.".csv'>".$result6."</a></b>\r\n";
     $text .= " - ";
     //$text .= "<b><a target='_blank' href='http://".$_SERVER['HTTP_HOST']."/HAL/publisHAL.rtf'>".$result7."</a></b><br><br></center>\r\n";
-    $text .= "<b><a target='_blank' href='./HAL/publisHAL.rtf'>".$result7."</a></b><br><br></center>\r\n";
+    $text .= "<b><a target='_blank' href='./HAL/publisHAL_".$unicite.".rtf'>".$result7."</a></b><br><br></center>\r\n";
   }
 }
 echo $text;
