@@ -283,6 +283,7 @@ if ($lang == "fr") {//français
 $labo = "";
 $collection_exp = "";
 $priorite = "";
+$entite = "";
 if (isset($_GET['labo']) && ($_GET['labo'] != "")) {
   $labo = strtoupper(htmlspecialchars($_GET['labo']));
   $priorite = "labo";
@@ -601,6 +602,7 @@ $mailtocrit = "";
 if ((isset($_GET['ipas']))  && ($typform == $form9s || $typform == $form9p)) {$ipas = htmlspecialchars($_GET['ipas']);}else{$ipas = 10;}
 if (isset($_GET['ideb'])) {$ideb = htmlspecialchars($_GET['ideb']);}else{$ideb = 1;}
 if (isset($_GET['ifin'])) {$ifin = htmlspecialchars($_GET['ifin']);}else{$ifin = $ideb + $ipas - 1;}
+if (isset($_GET['typord'])) {$typord = htmlspecialchars($_GET['typord']);}else{$typord = "desc";}
 if (isset($_GET['presbib']) && ($_GET['presbib'] != "br")) {$presbibtxt = " checked";$presbib = "&nbsp;-&nbsp;";}else{$presbibtxt = "";$presbib = "<br>";}
 if (isset($_GET['labocrit'])) {
   $labosur = explode(";", $labo);
@@ -757,7 +759,7 @@ if ($typform == $form9s) {//formulaire de recherche complet
       if (strpos($annee_excl, strval($i)) === false) {
 				$presbibUrl = "";
 				if ($presbib =="<br>") {$presbibUrl = "br";}
-        $text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdoc."&typform=".$typform."&anneedeb=".$i."&anneefin=".$i."&titre=".$titre."&aut=".$aut."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&detail=".$detail."&affDoi=".$affDoi."&affIdh=".$affIdh."&ipas=".$ipas."&acc=noninit\">".$i."</a>&nbsp;&nbsp;&nbsp;\r\n";
+        $text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdoc."&typform=".$typform."&anneedeb=".$i."&anneefin=".$i."&titre=".$titre."&aut=".$aut."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&detail=".$detail."&affDoi=".$affDoi."&affIdh=".$affIdh."&ipas=".$ipas."&typord=".$typord."&acc=noninit\">".$i."</a>&nbsp;&nbsp;&nbsp;\r\n";
       }
       $i--;
     }
@@ -796,6 +798,7 @@ if ($typform == $form9s) {//formulaire de recherche complet
     $text .= "<input type='hidden' name='lim_aut' value='".$lim_aut."'>\r\n";
     $text .= "<input type='hidden' name='annee_excl' value='".$annee_excl."'>\r\n";
     $text .= "<input type='hidden' name='ipas' value='".$ipas."'>\r\n";
+		$text .= "<input type='hidden' name='typord' value='".$typord."'>\r\n";
     $text .= "<input type='hidden' name='ideb' value='1'>\r\n";
     $text .= "<input type='hidden' name='typform' value='".$form9c."'>\r\n";
     $text .= "<br><input class='btn btn-md btn-primary' type='submit' value='".$form8."'>&nbsp;&nbsp;&nbsp;";
@@ -1576,7 +1579,11 @@ if (!empty($subtitle)) {
   //array_multisort($typdoctab, $premautab, $auteurs, $titrehref, $rvnp, $doi, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $indtab);
   //if (strpos($css, "ipr") !== false) {
   if ($typform == "sfvi") {
-    array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
+		if (isset($_GET['typord']) && ($_GET['typord'] == "asc")) {
+			array_multisort($typdoctab, $prodate, SORT_ASC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
+		}else{
+			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
+		}
   }else{
     array_multisort($typdoctab, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $prodate, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
   }
@@ -2025,7 +2032,7 @@ if ($halid == "") {
     if ($ifin > $irec) {$ifin = $irec;}
 		$presbibUrl = "";
 		if ($presbib =="<br>") {$presbibUrl = "br";}
-    $text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdocinit."&anneedeb=".$anneedeb."&anneefin=".$anneefin."&titre=".$titre."&aut=".$aut."&ipas=".$ipas."&ideb=".$ideb."&ifin=".$ifin."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&detail=".$detail."&typform=".$typform."&affDoi=".$affDoi."&affIdh=".$affIdh."&acc=noninit\">".$ideb."-".$ifin."</a>&nbsp;&nbsp;&nbsp;\r\n";
+    $text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdocinit."&anneedeb=".$anneedeb."&anneefin=".$anneefin."&titre=".$titre."&aut=".$aut."&ipas=".$ipas."&typord=".$typord."&ideb=".$ideb."&ifin=".$ifin."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&detail=".$detail."&typform=".$typform."&affDoi=".$affDoi."&affIdh=".$affIdh."&acc=noninit\">".$ideb."-".$ifin."</a>&nbsp;&nbsp;&nbsp;\r\n";
     $i++;
   }
   $text .= "<br><br></center></div></div></div></div>\r\n";
