@@ -1580,7 +1580,7 @@ if (!empty($subtitle)) {
   //if (strpos($css, "ipr") !== false) {
   if ($typform == "sfvi") {
 		if (isset($_GET['typord']) && ($_GET['typord'] == "asc")) {
-			array_multisort($typdoctab, $prodate, SORT_ASC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
+			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
 		}else{
 			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
 		}
@@ -1683,8 +1683,17 @@ $fontlien2->setUnderline();
 $parFormat = new PHPRtfLite_ParFormat(PHPRtfLite_ParFormat::TEXT_ALIGN_JUSTIFY);
 
 $rubr = "";
-$cpt = $ideb;
-if ($ifin > $irec) {$ifin = $irec;}
+if (isset($_GET['typord']) && ($_GET['typord'] == "asc")) {
+	if ($ifin == $irec) {
+		$cpt = $ifin - $ideb + 1;
+	}else{
+		$cpt = $irec - $ifin + $ipas;
+	}
+}else{
+	if ($ifin > $irec) {$ifin = $irec;}
+	$cpt = $ideb;
+}
+
 $rubr = "";
 for ($k = $ideb; $k <= $ifin; $k++) {
   $ok = "non";
@@ -1970,7 +1979,6 @@ for ($k = $ideb; $k <= $ifin; $k++) {
 
     //PDF
     $j = 1;
-    $cpt++;
     //si plusieurs PDF
     while (isset(${"pdf".$j}[$i])) {
       if (${"pdf".$j}[$i] != "-")  {$text .= ${"pdf".$j}[$i];}
@@ -2013,6 +2021,8 @@ for ($k = $ideb; $k <= $ifin; $k++) {
     //export en RTF
     $sect->writeText("<br><br>", $font);
     $rtf->save($Fnm2);
+		
+		if (isset($_GET['typord']) && ($_GET['typord'] == "asc")) {$cpt--;}else{$cpt++;}
   }
 }
 
