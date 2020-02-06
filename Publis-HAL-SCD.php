@@ -2061,8 +2061,5 @@ if ($halid == "") {
 echo $text;
 ?>
 <br>
-<?php
-include('https://halur1.univ-rennes1.fr/bas.php');
-?>
 </body>
 </html>
