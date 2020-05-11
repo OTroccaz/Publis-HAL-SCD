@@ -490,10 +490,10 @@ if (isset($_GET['typform']) && ($_GET['typform'] != "")) {$typform = htmlspecial
 if ($annee_publideb != "" || $anneedep != "") {
   if ($annee_publideb != "") {
     $anneedep = $annee_publideb;
-    $nbanneesfs = $anneen - $annee_publideb;
+		if (is_numeric($anneen) && is_numeric($annee_publideb)) {$nbanneesfs = $anneen - $annee_publideb;}else{$nbanneesfs = 8;}
     if ($nbanneesfs >= 8) {$nbanneesfs = 8;}
   }else{
-    $nbanneesfs = $anneen - $anneedep;
+		if (is_numeric($anneen) && is_numeric($anneedep)) {$nbanneesfs = $anneen - $anneedep;}else{$nbanneesfs = 8;}
   }
 }else{
   if ($typform == $form9s || $typform == $form9p) {//formulaire complet ou vue intégrale sans formulaire
@@ -601,7 +601,9 @@ $a = $anneen;
 $mailtocrit = "";
 if ((isset($_GET['ipas']))  && ($typform == $form9s || $typform == $form9p)) {$ipas = htmlspecialchars($_GET['ipas']);}else{$ipas = 10;}
 if (isset($_GET['ideb'])) {$ideb = htmlspecialchars($_GET['ideb']);}else{$ideb = 1;}
+if (!is_numeric($ipas) || !is_numeric($ideb)) {die();}
 if (isset($_GET['ifin'])) {$ifin = htmlspecialchars($_GET['ifin']);}else{$ifin = $ideb + $ipas - 1;}
+if (!is_numeric($ifin)) {die();}
 if (isset($_GET['typord'])) {$typord = htmlspecialchars($_GET['typord']);}else{$typord = "desc";}
 if (isset($_GET['presbib']) && ($_GET['presbib'] != "br")) {$presbibtxt = " checked";$presbib = "&nbsp;-&nbsp;";}else{$presbibtxt = "";$presbib = "<br>";}
 if (isset($_GET['labocrit'])) {
@@ -1168,8 +1170,9 @@ while (isset($labosur[$ii])) {
 
   //$dom->load($URL);
 
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, $URL);
+  $removeBom = function($var) { return preg_replace('/\\0/', "", $var); };
+	$ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $removeBom($URL));
   curl_setopt($ch, CURLOPT_HEADER, 0);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur1.univ-rennes1.fr)');
@@ -1191,7 +1194,12 @@ while (isset($labosur[$ii])) {
   $dom = new DOMDocument();
   $dom->loadXML($resultat);
 
-  $resinit = $dom->getElementsByTagName('result')->item(0)->getAttribute('numFound');
+  //if ($dom->getElementsByTagName('result') && $dom->getElementsByTagName('result')->item(0)->hasAttribute('numFound')) {
+	if ($dom->getElementsByTagName('result')->item(0)) {
+		$resinit = $dom->getElementsByTagName('result')->item(0)->getAttribute('numFound');
+	}else{
+		die("Requête erronée");
+	}
   $anneepre = $anneedeb - 1;
   if ($resinit == 0 && $anneepre == date('Y', time())) {//Si, en fin d'année n, il n'y a pas de résultat, on recherche sur l'année n-1
     $URL = str_replace($anneedeb, $anneepre, $URL);
@@ -1316,7 +1324,7 @@ while (isset($labosur[$ii])) {
           $enfants = $resgen2->childNodes;
           foreach($enfants as $enfant) {
             //echo 'toto : '.$prenoms->item($cpt-1)->textContent.' - '.$enfant->nodeValue.'<br>';
-            $prenomauteur = $prenoms->item($cpt-1)->textContent;
+						if (isset($prenoms->item($cpt-1)->textContent)) {$prenomauteur = $prenoms->item($cpt-1)->textContent;}else{$prenomauteur = "";}
             $nomabrege = $enfant->nodeValue;
             $nomabrege = str_replace($prenomauteur, prenomCompInit($prenomauteur), $nomabrege);
             $autliste .= $nomabrege . ", ";
@@ -2036,15 +2044,17 @@ if ($halid == "") {
   }else{
     if ($labocrit2 == $labo) {$labocrit2 = "";}
   }
-  while((($ipas * $i) + 1) <= $irec) {
-    $ideb = ($ipas * $i) + 1;
-    $ifin = $ideb + $ipas - 1;
-    if ($ifin > $irec) {$ifin = $irec;}
-		$presbibUrl = "";
-		if ($presbib =="<br>") {$presbibUrl = "br";}
-    $text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdocinit."&anneedeb=".$anneedeb."&anneefin=".$anneefin."&titre=".$titre."&aut=".$aut."&ipas=".$ipas."&typord=".$typord."&ideb=".$ideb."&ifin=".$ifin."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&detail=".$detail."&typform=".$typform."&affDoi=".$affDoi."&affIdh=".$affIdh."&acc=noninit\">".$ideb."-".$ifin."</a>&nbsp;&nbsp;&nbsp;\r\n";
-    $i++;
-  }
+	if (is_numeric($ipas) && is_numeric($irec)) {
+		while((($ipas * $i) + 1) <= $irec) {
+			$ideb = ($ipas * $i) + 1;
+			$ifin = $ideb + $ipas - 1;
+			if ($ifin > $irec) {$ifin = $irec;}
+			$presbibUrl = "";
+			if ($presbib =="<br>") {$presbibUrl = "br";}
+			$text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdocinit."&anneedeb=".$anneedeb."&anneefin=".$anneefin."&titre=".$titre."&aut=".$aut."&ipas=".$ipas."&typord=".$typord."&ideb=".$ideb."&ifin=".$ifin."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&detail=".$detail."&typform=".$typform."&affDoi=".$affDoi."&affIdh=".$affIdh."&acc=noninit\">".$ideb."-".$ifin."</a>&nbsp;&nbsp;&nbsp;\r\n";
+			$i++;
+		}
+	}
   $text .= "<br><br></center></div></div></div></div>\r\n";
 }
 
