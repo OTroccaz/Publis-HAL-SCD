@@ -350,7 +350,6 @@ if (date ('m') == 11 || date ('m') == 12) {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur1.univ-rennes1.fr)');
   curl_setopt($ch, CURLOPT_USERAGENT, 'PROXY (http://siproxy.univ-rennes1.fr)');
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
   $resultat = curl_exec($ch);
   curl_close($ch);
   $dom = new DOMDocument();
@@ -1177,7 +1176,6 @@ while (isset($labosur[$ii])) {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur1.univ-rennes1.fr)');
   curl_setopt($ch, CURLOPT_USERAGENT, 'PROXY (http://siproxy.univ-rennes1.fr)');
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
   $resultat = curl_exec($ch);
 
   if(!isset($resultat) || $resultat == "") {
@@ -1209,7 +1207,6 @@ while (isset($labosur[$ii])) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur1.univ-rennes1.fr)');
     curl_setopt($ch, CURLOPT_USERAGENT, 'PROXY (http://siproxy.univ-rennes1.fr)');
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     $resultat = curl_exec($ch);
     $resultat = str_replace(" < "," &#60; ",$resultat);
     curl_close($ch);
