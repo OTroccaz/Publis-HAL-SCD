@@ -350,8 +350,10 @@ if (date ('m') == 11 || date ('m') == 12) {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur1.univ-rennes1.fr)');
   curl_setopt($ch, CURLOPT_USERAGENT, 'PROXY (http://siproxy.univ-rennes1.fr)');
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-	curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
+  if (isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
+		curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
+	}
   $resultat = curl_exec($ch);
   curl_close($ch);
   $dom = new DOMDocument();
@@ -1178,8 +1180,10 @@ while (isset($labosur[$ii])) {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur1.univ-rennes1.fr)');
   curl_setopt($ch, CURLOPT_USERAGENT, 'PROXY (http://siproxy.univ-rennes1.fr)');
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-	curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
+	if (isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
+		curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
+	}
   $resultat = curl_exec($ch);
 
   if(!isset($resultat) || $resultat == "") {
@@ -1211,8 +1215,10 @@ while (isset($labosur[$ii])) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur1.univ-rennes1.fr)');
     curl_setopt($ch, CURLOPT_USERAGENT, 'PROXY (http://siproxy.univ-rennes1.fr)');
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    if (isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 		curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
+	}
     $resultat = curl_exec($ch);
     $resultat = str_replace(" < "," &#60; ",$resultat);
     curl_close($ch);
