@@ -1597,7 +1597,7 @@ if (!empty($subtitle)) {
   //if (strpos($css, "ipr") !== false) {
   if ($typform == "sfvi") {
 		if (isset($_GET['typord']) && ($_GET['typord'] == "asc")) {
-			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
+			array_multisort($typdoctab, $prodate, SORT_ASC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
 		}else{
 			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
 		}
