@@ -1700,18 +1700,17 @@ $fontlien2->setUnderline();
 $parFormat = new PHPRtfLite_ParFormat(PHPRtfLite_ParFormat::TEXT_ALIGN_JUSTIFY);
 
 $rubr = "";
-/*
-if (isset($_GET['typord']) && ($_GET['typord'] == "asc")) {
+
+if (isset($_GET['typord']) && ($_GET['typord'] == "asc" || $_GET['typord'] == "descInv")) {
 	if ($ifin == $irec) {
 		$cpt = $ifin - $ideb + 1;
 	}else{
 		$cpt = $irec - $ifin + $ipas;
 	}
 }else{
-*/	
 	if ($ifin > $irec) {$ifin = $irec;}
 	$cpt = $ideb;
-//}
+}
 
 $rubr = "";
 for ($k = $ideb; $k <= $ifin; $k++) {
@@ -2041,8 +2040,7 @@ for ($k = $ideb; $k <= $ifin; $k++) {
     $sect->writeText("<br><br>", $font);
     $rtf->save($Fnm2);
 		
-		//if (isset($_GET['typord']) && ($_GET['typord'] == "asc")) {$cpt--;}else{$cpt++;}
-		$cpt++;
+		if (isset($_GET['typord']) && ($_GET['typord'] == "asc" || $_GET['typord'] == "descInv")) {$cpt--;}else{$cpt++;}
   }
 }
 
