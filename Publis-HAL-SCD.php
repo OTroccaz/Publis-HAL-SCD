@@ -694,7 +694,7 @@ if ($typform == $form9s) {//formulaire de recherche complet
   $text .= "<label for='typdoc'>".$form6."</label><br>\r\n";
   $text .= "<select size='3' id='typdoc' name='typdoc' class='form-control' style='margin:0px; width:300px'>";
   if($typdoc == "ART") {$txt = " selected";}else{$txt = "";}
-  $text .= "<option value='ART'".$txt."}>".$typdocHAL['1']."</option>\r\n";
+  $text .= "<option value='ART'".$txt.">".$typdocHAL['1']."</option>\r\n";
   if($typdoc == "COMM") {$txt = " selected";}else{$txt = "";}
   $text .= "<option value='COMM'".$txt.">".$typdocHAL['2']."</option>\r\n";
   if($typdoc == "COUV") {$txt = " selected";}else{$txt = "";}
