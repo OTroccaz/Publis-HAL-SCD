@@ -1166,8 +1166,7 @@ while (isset($labosur[$ii])) {
     }
   }
 
-
-  $URL .= '&fl=title_s,subTitle_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_s,bookTitle_s,conferenceTitle_s,fileMain_s,files_s,halId_s,label_bibtex,volume_s,issue_s,page_s,journalPublisher_s,scientificEditor_s,pubmedId_s,audience_s,peerReviewing_s,authIdHalFullName_fs,authFirstName_s,language_s&sort=auth_sort asc';
+	$URL .= '&fl=title_s,subTitle_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_s,bookTitle_s,conferenceTitle_s,fileMain_s,files_s,halId_s,label_bibtex,volume_s,issue_s,page_s,journalPublisher_s,scientificEditor_s,pubmedId_s,audience_s,peerReviewing_s,authIdHalFullName_fs,authFirstName_s,language_s&sort=auth_sort asc';
   $URL = str_replace(" ", "%20", $URL);
   //echo ("toto : ".$URL);
 
@@ -1602,7 +1601,11 @@ if (!empty($subtitle)) {
 			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
 		}
   }else{
-    array_multisort($typdoctab, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $prodate, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
+		if ($anneedeb != $anneefin) {//Si recherche sur différentes années, classer par années décroissantes, puis par auteurs
+			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
+		}else{
+			array_multisort($typdoctab, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $prodate, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
+		}
   }
 }
 
