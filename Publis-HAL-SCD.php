@@ -911,6 +911,7 @@ while (isset($labosur[$ii])) {
         if ($iaut == 0) {$URL .= " AND (";}else{$URL .= " OR";}
         $auteur_exp2 = $diffaut[$iaut];
         $URL .= ' authFullName_s:"'.$auteur_exp2.'"';
+				$URL .= ' OR authFullName_s:"'.str_replace(".", "", $auteur_exp2).'"';
         $iaut++;
       }
       $URL .= ')';
@@ -928,6 +929,7 @@ while (isset($labosur[$ii])) {
         if ($iaut == 0) {$URL .= "(";}else{$URL .= " OR";}
         $auteur_exp2 = $diffaut[$iaut];
         $URL .= ' authFullName_s:"'.$auteur_exp2.'"';
+				$URL .= ' OR authFullName_s:"'.str_replace(".", "", $auteur_exp2).'"';
         $iaut++;
       }
       $URL .= ')';
