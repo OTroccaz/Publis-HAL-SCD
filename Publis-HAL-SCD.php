@@ -324,6 +324,7 @@ if (isset($_GET['collection_exp']) && ($_GET['collection_exp'] != "")) {
     }
   }
 }
+
 $equipe_recherche_exp = "";
 if (isset($_GET['equipe_recherche_exp']) && ($_GET['equipe_recherche_exp'] != "")) {
   $equipe_recherche_exp = htmlspecialchars($_GET['equipe_recherche_exp']);
@@ -516,6 +517,12 @@ if (isset($_GET['detail']) && ($_GET['detail'] != "")) {
 $mef = "";
 if (isset($_GET['mef']) && ($_GET['mef'] != "")) {
   $mef = htmlspecialchars($_GET['mef']);
+}
+
+//ID structure pour mise en valeur des auteurs
+$ids = "";
+if (isset($_GET['ids']) && ($_GET['ids'] != "")) {
+  $ids = htmlspecialchars($_GET['ids']);
 }
 
 $premautab = array();
@@ -764,7 +771,7 @@ if ($typform == $form9s) {//formulaire de recherche complet
       if (strpos($annee_excl, strval($i)) === false) {
 				$presbibUrl = "";
 				if ($presbib =="<br>") {$presbibUrl = "br";}
-        $text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdoc."&typform=".$typform."&anneedeb=".$i."&anneefin=".$i."&titre=".$titre."&aut=".$aut."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&detail=".$detail."&affDoi=".$affDoi."&affIdh=".$affIdh."&ipas=".$ipas."&typord=".$typord."&acc=noninit\">".$i."</a>&nbsp;&nbsp;&nbsp;\r\n";
+        $text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdoc."&typform=".$typform."&anneedeb=".$i."&anneefin=".$i."&titre=".$titre."&aut=".$aut."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&ids=".$ids."&detail=".$detail."&affDoi=".$affDoi."&affIdh=".$affIdh."&ipas=".$ipas."&typord=".$typord."&acc=noninit\">".$i."</a>&nbsp;&nbsp;&nbsp;\r\n";
       }
       $i--;
     }
@@ -1168,7 +1175,7 @@ while (isset($labosur[$ii])) {
     }
   }
 
-	$URL .= '&fl=title_s,subTitle_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_s,bookTitle_s,conferenceTitle_s,fileMain_s,files_s,halId_s,label_bibtex,volume_s,issue_s,page_s,journalPublisher_s,scientificEditor_s,pubmedId_s,audience_s,peerReviewing_s,authIdHalFullName_fs,authFirstName_s,language_s&sort=auth_sort asc';
+	$URL .= '&fl=title_s,subTitle_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_s,bookTitle_s,conferenceTitle_s,fileMain_s,files_s,halId_s,label_bibtex,volume_s,issue_s,page_s,journalPublisher_s,scientificEditor_s,pubmedId_s,audience_s,peerReviewing_s,authIdHalFullName_fs,authFirstName_s,language_s,authLastName_s,authIdHasPrimaryStructure_fs&sort=auth_sort asc';
   $URL = str_replace(" ", "%20", $URL);
   //echo ("toto : ".$URL);
 
@@ -1207,6 +1214,46 @@ while (isset($labosur[$ii])) {
 	}else{
 		die("Requête erronée");
 	}
+	
+	//Recherche des auteurs de la collection grâce aux affiliations
+	if ($ids != "~") {
+		$contents = file_get_contents(str_replace("wt=xml&", "", $URL));
+		$contents = utf8_encode($contents);
+		$results = json_decode($contents);
+		$numFound = 0;
+		if (isset($results->response->numFound)) {$numFound=$results->response->numFound;}
+		
+		if ($numFound != 0) {
+			$tabId = explode(",", $ids);
+			foreach($tabId as $Id) {
+			 if ($Id != "") {
+				 foreach($results->response->docs as $entry){
+					 foreach($entry->authIdHasPrimaryStructure_fs as $auth){
+						 $tabAuth = explode("_FacetSep_", $auth);
+						 if (strpos($tabAuth[1], $Id) !== false) {//Auteur de la collection
+							 $tabQ = explode("_JoinSep_", $tabAuth[1]);
+							 $indQ = 0;
+							 foreach($entry->authFullName_s as $funa){
+								 if ($funa == $tabQ[0] && strpos($listenominit, $entry->authFirstName_s[$indQ]) === false) {
+									 $prenom = prenomCompInit($entry->authFirstName_s[$indQ]);
+									 $listenominit .= nomCompEntier($entry->authLastName_s[$indQ])." ".$prenom.".~";
+									 $listenominit2 .= $prenom." ".nomCompEntier($entry->authLastName_s[$indQ])."~";
+									 $arriv .= "1900~";
+									 $moisactuel = date('n', time());
+									 if ($moisactuel >= 10) {$idepar = date('Y', time())+1;}else{$idepar = date('Y', time());}
+									 $depar .= $idepar."~";
+									 break;
+								 }
+								 $indQ++;
+							 }
+						 }
+					 }
+				 }
+			 }
+			}
+		}
+	}
+	
   $anneepre = $anneedeb - 1;
   if ($resinit == 0 && $anneepre == date('Y', time())) {//Si, en fin d'année n, il n'y a pas de résultat, on recherche sur l'année n-1
     $URL = str_replace($anneedeb, $anneepre, $URL);
@@ -2066,7 +2113,7 @@ if ($halid == "") {
 			if ($ifin > $irec) {$ifin = $irec;}
 			$presbibUrl = "";
 			if ($presbib =="<br>") {$presbibUrl = "br";}
-			$text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdocinit."&anneedeb=".$anneedeb."&anneefin=".$anneefin."&titre=".$titre."&aut=".$aut."&ipas=".$ipas."&typord=".$typord."&ideb=".$ideb."&ifin=".$ifin."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&detail=".$detail."&typform=".$typform."&affDoi=".$affDoi."&affIdh=".$affIdh."&acc=noninit\">".$ideb."-".$ifin."</a>&nbsp;&nbsp;&nbsp;\r\n";
+			$text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdocinit."&anneedeb=".$anneedeb."&anneefin=".$anneefin."&titre=".$titre."&aut=".$aut."&ipas=".$ipas."&typord=".$typord."&ideb=".$ideb."&ifin=".$ifin."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&ids=".$ids."&detail=".$detail."&typform=".$typform."&affDoi=".$affDoi."&affIdh=".$affIdh."&acc=noninit\">".$ideb."-".$ifin."</a>&nbsp;&nbsp;&nbsp;\r\n";
 			$i++;
 		}
 	}
