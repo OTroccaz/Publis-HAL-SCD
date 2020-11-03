@@ -546,16 +546,16 @@ $indtab = array();
 $a = $anneen;
 //$plong = 9;
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="<?php echo $lang ;?>">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <title>Les publications HAL <?php echo($entite);?></title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   <script type='text/x-mathjax-config'>
     MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['$$','$$']]}});
   </script>
-  <STYLE type="text/css">
+  <STYLE>
   BODY {
     font-family: sans-serif, Times, "Times New Roman";
   }
@@ -581,7 +581,7 @@ $a = $anneen;
 	<?php
 	if (isset($_GET['frame']) && ($_GET['frame'] == "oui")) {
 	?>
-	<script type="text/javascript">
+	<script>
 			function resizeIframe() {
 
 					var docHeight;
@@ -643,7 +643,7 @@ if (isset($_GET['anneedeb'])) {$anneedeb = htmlspecialchars($_GET['anneedeb']);}
 if (isset($_GET['anneefin'])) {$anneefin = htmlspecialchars($_GET['anneefin']);}else{if (isset($_GET['anneedeb'])) {$anneefin = htmlspecialchars($_GET['anneedeb']);}else{$anneefin = $anneedeb;}}
 // vérification sur ordre des années si différentes
 if ($anneefin < $anneedeb) {$anneetemp = $anneedeb; $anneedeb = $anneefin; $anneefin = $anneetemp;}
-//$text = "<div id='res_script'><div align='center'><h2><b>".$labo." - Publications</b></h2></div><br>\r\n";
+//$text = "<div id='res_script'><div style='text-align: center;'><h2><b>".$labo." - Publications</b></h2></div><br>\r\n";
 $text = "<br>";
 if ($typform == $form9p) {//sans formulaire et vue intégrale
   if (isset($_GET['anneedeb'])) {$anneedeb = htmlspecialchars($_GET['anneedeb']);}else{$anneedeb = "1970";}
@@ -764,14 +764,14 @@ if ($typform == $form9s) {//formulaire de recherche complet
   //années
   if ($halid == "" && $typform != $form9p) {
     if ($anneedeb != $anneefin) {$anneedeb = $anneen; $anneefin = $anneen;}
-    $text .= "<div align='center'><h3>\r\n";
+    $text .= "<div style='text-align: center;'><h3>\r\n";
     $i = $anneen;
     while ($i >= $anneen - $nbanneesfs) {
       //on vérifie si ce n'est pas une année à exclure
       if (strpos($annee_excl, strval($i)) === false) {
 				$presbibUrl = "";
 				if ($presbib =="<br>") {$presbibUrl = "br";}
-        $text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdoc."&typform=".$typform."&anneedeb=".$i."&anneefin=".$i."&titre=".$titre."&aut=".$aut."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&ids=".$ids."&detail=".$detail."&affDoi=".$affDoi."&affIdh=".$affIdh."&ipas=".$ipas."&typord=".$typord."&acc=noninit\">".$i."</a>&nbsp;&nbsp;&nbsp;\r\n";
+        $text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdoc."&typform=".str_replace(' ', '%20', $typform)."&anneedeb=".$i."&anneefin=".$i."&titre=".$titre."&aut=".$aut."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&ids=".$ids."&detail=".$detail."&affDoi=".$affDoi."&affIdh=".$affIdh."&ipas=".$ipas."&typord=".$typord."&acc=noninit\">".$i."</a>&nbsp;&nbsp;&nbsp;\r\n";
       }
       $i--;
     }
@@ -820,7 +820,7 @@ if ($typform == $form9s) {//formulaire de recherche complet
 }
 
 if (((isset($_GET['aut']) && $_GET['aut'] != "") || (isset($_GET['titre']) && $_GET['titre'] != "") || (isset($_GET['typdoc']) && $_GET['typdoc'] != "(\'ART\',\'COMM\')")) && (($typform != $form9p) && (isset($_GET['form']) && $_GET['form'] != "aucun") && (isset($_GET['acc']) && $_GET['acc'] != "init"))) {
-  $text .= "<center><a href='".$_SERVER['PHP_SELF']."?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&typform=".$typform."&typdoc=".$typdoc."&detail=".$detail."&acc=init'>".$reinit."</a></center><br><br>\r\n";
+  $text .= "<div style='text-align: center;'><a href='".$_SERVER['PHP_SELF']."?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&typform=".str_replace(' ', '%20', $typform)."&typdoc=".$typdoc."&detail=".$detail."&acc=init'>".$reinit."</a></div><br><br>\r\n";
 }
 
 $labo2 = $labocrit;
@@ -1195,7 +1195,7 @@ while (isset($labosur[$ii])) {
   $resultat = curl_exec($ch);
 
   if(!isset($resultat) || $resultat == "") {
-		echo ('<br><br><b><center><big>Contenu temporairement indisponible. Merci de votre patience / Content temporarily unavailable. We apologize for the inconvenience</big></center></b>');
+		echo ('<br><br><b><div style=\'text-align: center;\'><big>Contenu temporairement indisponible. Merci de votre patience / Content temporarily unavailable. We apologize for the inconvenience</big></div></b>');
 		die;
 	}
 	
@@ -1474,9 +1474,9 @@ while (isset($labosur[$ii])) {
           $pdf1[$i] = str_replace(array("http://","https://","http//","https//"), "", $pdf1[$i]);
       }
       if (strpos($pdf1[$i], "inserm") === false) {
-        $pdf1[$i] = "<a target='_blank' href='https://".$pdf1[$i]."'><img alt='".$form11."' src='https://ecobio.univ-rennes1.fr/PDF_icon.gif' height='13px' border='0'  title='PDF' /></a>";
+        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='https://".$pdf1[$i]."'><img alt='".$form11."' src='https://ecobio.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
       }else{
-        $pdf1[$i] = "<a target='_blank' href='http://".$pdf1[$i]."'><img alt='".$form11."' src='https://ecobio.univ-rennes1.fr/PDF_icon.gif' height='13px' border='0'  title='PDF' /></a>";
+        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='http://".$pdf1[$i]."'><img alt='".$form11."' src='https://ecobio.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
       }
     }
     if (isset($typdocxml[$i])) {
@@ -1527,7 +1527,7 @@ while (isset($labosur[$ii])) {
       $url = str_replace(array("http://", "https://"), "",$uri[$i]);
       $pos = strpos($url, "/")+1;
       $url = substr($url, $pos, (strlen($url)-$pos));
-      $bibtex[$i] = "<a target='_blank' href='https://halur1.univ-rennes1.fr/Publis-HAL-SCD-bibtex.php?id=".$url."'><img alt='".$form10."' src='https://ecobio.univ-rennes1.fr/BIB_icon.gif' height='13px' border='0' title='BibTex' /></a> ";
+      $bibtex[$i] = "<a target='_blank' href='https://halur1.univ-rennes1.fr/Publis-HAL-SCD-bibtex.php?id=".$url."'><img alt='".$form10."' src='https://ecobio.univ-rennes1.fr/BIB_icon.gif' style='height: 13px; border:0;' title='BibTex' /></a> ";
       $test = str_replace("&lt;".$url."&gt;", "", $test);
       $test = str_replace(", et al. ", "", $test);
       $test = str_replace(". .", ".", $test);
@@ -1545,14 +1545,14 @@ while (isset($labosur[$ii])) {
     $rvnp[$i] = str_replace("  ", "", $rvnp[$i]);
     //Demande reprint par mail
     if ($mailto != "aucun") {
-      $repr = "&nbsp;<a href='mailto:".$mailto."?subject=Reprint request&amp;body=Would you please send me a copy of the following article: ";
-      $repr .= str_replace("'","’",strip_tags($auteurs[$i]));
-      $repr .= " - ";
-      $repr .= str_replace("'","’",strip_tags($titreseul[$i]));
-      $repr .= " - ";
-      $repr .= str_replace("'","’",strip_tags($rvnp[$i]));
-      $repr .= " Many thanks for considering my request.";
-      $repr .= "'><img border='0' src='https://ecobio.univ-rennes1.fr/e107_images/custom/ReprintRequest.jpg' alt='Reprint request: Subject to availability' title='Reprint request: Subject to availability'></a>";
+      $repr = "&nbsp;<a href='mailto:".$mailto."?subject=Reprint%20request&amp;body=Would%20you%20please%20send%20me%20a%20copy%20of%20the%20following%20article:%20";
+      $repr .= str_replace(array("'", " ", "[", "]"), array("’", "%20", "%5B", "%5D"), strip_tags($auteurs[$i]));
+      $repr .= "%20-%20";
+      $repr .= str_replace(array("'", " ", "[", "]"), array("’", "%20", "%5B", "%5D"), strip_tags($titreseul[$i]));
+      $repr .= "%20-%20";
+      $repr .= str_replace(array("'", " ", "[", "]"), array("’", "%20", "%5B", "%5D"), strip_tags($rvnp[$i]));
+      $repr .= "%20Many%20thanks%20for%20considering%20my%20request.";
+      $repr .= "'><img style='border:0;' src='https://ecobio.univ-rennes1.fr/e107_images/custom/ReprintRequest.jpg' alt='Reprint request: Subject to availability' title='Reprint request: Subject to availability'></a>";
       $repr .= "<br>";
     }else{
       $repr = "&nbsp;";
@@ -1877,50 +1877,50 @@ for ($k = $ideb; $k <= $ifin; $k++) {
 			$autaff = mise_en_evidence(wd_remove_accents($authidhal_mev), $auteurs[$i], "<b><u>", "</u></b>");
     }
     //corrections
-    $autaff = str_replace(array("<b><u><b><u>","</b></u></b></u>","troliesp",","), array("<b><u>","</b></u>"," ",", "), $autaff);
+    $autaff = str_replace(array("<b><u><b><u>","</b></u></b></u>","</u></b></u></b>","troliesp",","), array("<b><u>","</b></u>","</u></b>"," ",", "), $autaff);
 		$autaff = str_replace(array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf"), array(".", "-", "'", " ", "(", ")"), $autaff);
     $titreaff = str_replace(array($titre, ucfirst($titre), strtoupper($titre), strtolower($titre)),array($titreaff1, $titreaff2, $titreaff3, $titreaff4),$titrehref[$i]);
     $rvnp[$i] = str_replace(': . ', '', $rvnp[$i]);
     if (isset($_GET['presbib']) && ($_GET['presbib'] != "br")) {
       //$textaff = "<dt class='ChampRes'>Indice</dt><dd class='ValeurRes Indice' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
-      $textaff = "<dd class='ValeurRes Indice' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
+      $textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Indice' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
       //$textaff .= "<dt class='ChampRes'>Auteurs</dt><dd class='ValeurRes Auteurs' style='display: inline; margin-left: 0%; font-size: 1em;'>".$autaff."</dd>";
-      $textaff .= "<dd class='ValeurRes Auteurs' style='display: inline; margin-left: 0%; font-size: 1em;'>".$autaff."</dd>";
+      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Auteurs' style='display: inline; margin-left: 0%; font-size: 1em;'>".$autaff."</dd>";
       //$textaff .= "<dt class='ChampRes'>Titre</dt><dd class='ValeurRes Titre' style='display: inline; margin-left: 0%; font-size: 1em;'>".$titreaff."</dd>";
-      $textaff .= "<dd class='ValeurRes Titre' style='display: inline; margin-left: 0%; font-size: 1em;'>".$titreaff."</dd>";
+      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='display: inline; margin-left: 0%; font-size: 1em;'>".$titreaff."</dd>";
       //$textaff .= "<dt class='ChampRes'>Détail</dt><dd class='ValeurRes Detail' style='display: inline; margin-left: 0%; font-size: 1em;'>".$rvnp[$i]."</dd>";
-      $textaff .= "<dd class='ValeurRes Detail' style='display: inline; margin-left: 0%; font-size: 1em;'>".$rvnp[$i]."</dd>";
+      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Detail' style='display: inline; margin-left: 0%; font-size: 1em;'>".$rvnp[$i]."</dd>";
       if ($doi[$i] == "-") {$doiaff = "";}else{$doiaff = $doi[$i];}
       //$textaff .= "<dt class='ChampRes'>DOI</dt><dd class='ValeurRes DOI' style='display: inline; margin-left: 0%; font-size: 1em;'>".$doiaff."</dd>";
-      $textaff .= "<dd class='ValeurRes DOI' style='display: inline; margin-left: 0%; font-size: 1em;'>".$doiaff."</dd>";
+      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes DOI' style='display: inline; margin-left: 0%; font-size: 1em;'>".$doiaff."</dd>";
       if ($pubmed[$i] == "-") {$pubmedaff = "";}else{$pubmedaff = $pubmed[$i];}
-      $textaff .= "<dd class='ValeurRes Pubmed' style='display: inline; margin-left: 0%; font-size: 1em;'>".$pubmedaff."</dd>";
+      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Pubmed' style='display: inline; margin-left: 0%; font-size: 1em;'>".$pubmedaff."</dd>";
       //$textaff .= "<dt class='ChampRes'>Accès au bibtex</dt><dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'>".$bibtex[$i]."</dd>";
       if ($bt == "oui") {
-        $textaff .= "<dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'>".$bibtex[$i]."</dd>";
+        $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'>".$bibtex[$i]."</dd>";
       }else{
-        $textaff .= "<dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'></dd>";
+        $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'></dd>";
       }
       $text .= "<dl class='NoticeRes'><div style='margin-left: 3%;'>";
     }else{
       //$textaff = "<dt class='ChampRes'>Indice</dt><dd class='ValeurRes Indice' style='float: left; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
-      $textaff = "<dd class='ValeurRes Indice' style='float: left; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
+      $textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Indice' style='float: left; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
       //$textaff .= "<dt class='ChampRes'>Auteurs</dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$titreaff."</dd>";
-      $textaff .= "<dd class='ValeurRes Titre' style='font-size: 1em;'>".$titreaff."</dd>";
+      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$titreaff."</dd>";
       //$textaff .= "<dt class='ChampRes'>Titre</dt><dd class='ValeurRes Auteurs' style='font-size: 1em;'>".$autaff."</dd>";
-      $textaff .= "<dd class='ValeurRes Auteurs' style='font-size: 1em;'>".$autaff."</dd>";
+      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Auteurs' style='font-size: 1em;'>".$autaff."</dd>";
       //$textaff .= "<dt class='ChampRes'>Détail</dt><dd class='ValeurRes Detail' style='font-size: 1em;'>".$rvnp[$i]."</dd>";
-      $textaff .= "<dd class='ValeurRes Detail' style='font-size: 1em;'>".$rvnp[$i]."</dd>";
+      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Detail' style='font-size: 1em;'>".$rvnp[$i]."</dd>";
       if ($doi[$i] == "-") {$doiaff = "";}else{$doiaff = $doi[$i];}
       //$textaff .= "<dt class='ChampRes'>DOI</dt><dd class='ValeurRes DOI' style='font-size: 1em;'>".$doiaff."</dd>";
-      $textaff .= "<dd class='ValeurRes DOI' style='font-size: 1em;'>".$doiaff."</dd>";
+      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes DOI' style='font-size: 1em;'>".$doiaff."</dd>";
       if ($pubmed[$i] == "-") {$pubmedaff = "";}else{$pubmedaff = $pubmed[$i];}
-      $textaff .= "<dd class='ValeurRes Pubmed' style='font-size: 1em;'>".$pubmedaff."</dd>";
+      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Pubmed' style='font-size: 1em;'>".$pubmedaff."</dd>";
       //$textaff .= "<dt class='ChampRes'>Accès au bibtex</dt><dd class='ValeurRes' style='display: inline; font-size: 1em;'>".$bibtex[$i]."</dd>";
       if ($bt == "oui") {
-        $textaff .= "<dd class='ValeurRes' style='display: inline; font-size: 1em;'>".$bibtex[$i]."</dd>";
+        $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes' style='display: inline; font-size: 1em;'>".$bibtex[$i]."</dd>";
       }else{
-        $textaff .= "<dd class='ValeurRes' style='display: inline; font-size: 1em;'></dd>";
+        $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes' style='display: inline; font-size: 1em;'></dd>";
       }
       $text .= "<dl class='NoticeRes'>";
     }
@@ -2098,7 +2098,7 @@ for ($k = $ideb; $k <= $ifin; $k++) {
 
 //navigation
 if ($halid == "") {
-  $text .= "<br><br><center>\r\n";
+  $text .= "<br><br><div style='text-align: center;'>\r\n";
 
   $i = 0;
   if ($priorite == "collection_exp") {
@@ -2113,21 +2113,21 @@ if ($halid == "") {
 			if ($ifin > $irec) {$ifin = $irec;}
 			$presbibUrl = "";
 			if ($presbib =="<br>") {$presbibUrl = "br";}
-			$text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdocinit."&anneedeb=".$anneedeb."&anneefin=".$anneefin."&titre=".$titre."&aut=".$aut."&ipas=".$ipas."&typord=".$typord."&ideb=".$ideb."&ifin=".$ifin."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&ids=".$ids."&detail=".$detail."&typform=".$typform."&affDoi=".$affDoi."&affIdh=".$affIdh."&acc=noninit\">".$ideb."-".$ifin."</a>&nbsp;&nbsp;&nbsp;\r\n";
+			$text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdocinit."&anneedeb=".$anneedeb."&anneefin=".$anneefin."&titre=".$titre."&aut=".$aut."&ipas=".$ipas."&typord=".$typord."&ideb=".$ideb."&ifin=".$ifin."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&ids=".$ids."&detail=".$detail."&typform=".str_replace(' ', '%20', $typform)."&affDoi=".$affDoi."&affIdh=".$affIdh."&acc=noninit\">".$ideb."-".$ifin."</a>&nbsp;&nbsp;&nbsp;\r\n";
 			$i++;
 		}
 	}
-  $text .= "<br><br></center></div></div></div></div>\r\n";
+  $text .= "<br><br></div></div>\r\n";
 }
 
 fclose($inF);
 if ($halid == "") {
   if ($irec != 0) {
-    //$text .= "<center><b><a target='_blank' href='http://".$_SERVER['HTTP_HOST']."/HAL/publisHAL.csv'>".$result6."</a></b>\r\n";
-    $text .= "<center><b><a target='_blank' href='./HAL/publisHAL_".$unicite.".csv'>".$result6."</a></b>\r\n";
+    //$text .= "<div style='text-align: center;'><b><a target='_blank' href='http://".$_SERVER['HTTP_HOST']."/HAL/publisHAL.csv'>".$result6."</a></b>\r\n";
+    $text .= "<div style='text-align: center;'><b><a target='_blank' href='./HAL/publisHAL_".$unicite.".csv'>".$result6."</a></b>\r\n";
     $text .= " - ";
-    //$text .= "<b><a target='_blank' href='http://".$_SERVER['HTTP_HOST']."/HAL/publisHAL.rtf'>".$result7."</a></b><br><br></center>\r\n";
-    $text .= "<b><a target='_blank' href='./HAL/publisHAL_".$unicite.".rtf'>".$result7."</a></b><br><br></center>\r\n";
+    //$text .= "<b><a target='_blank' href='http://".$_SERVER['HTTP_HOST']."/HAL/publisHAL.rtf'>".$result7."</a></b><br><br></div>\r\n";
+    $text .= "<b><a target='_blank' href='./HAL/publisHAL_".$unicite.".rtf'>".$result7."</a></b><br><br></div>\r\n";
   }
 }
 echo $text;
