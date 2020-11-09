@@ -1877,7 +1877,7 @@ for ($k = $ideb; $k <= $ifin; $k++) {
 			$autaff = mise_en_evidence(wd_remove_accents($authidhal_mev), $auteurs[$i], "<b><u>", "</u></b>");
     }
     //corrections
-    $autaff = str_replace(array("<b><u><b><u>","</b></u></b></u>","</u></b></u></b>","troliesp",","), array("<b><u>","</b></u>","</u></b>"," ",", "), $autaff);
+		$autaff = str_replace(array("<b><u><b><u>","</b></u></b></u>","troliesp",","), array("<b><u>","</b></u>"," ",", "), $autaff);
 		$autaff = str_replace(array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf"), array(".", "-", "'", " ", "(", ")"), $autaff);
     $titreaff = str_replace(array($titre, ucfirst($titre), strtoupper($titre), strtolower($titre)),array($titreaff1, $titreaff2, $titreaff3, $titreaff4),$titrehref[$i]);
     $rvnp[$i] = str_replace(': . ', '', $rvnp[$i]);
