@@ -293,36 +293,14 @@ if (isset($_GET['collection_exp']) && ($_GET['collection_exp'] != "")) {
   $collection_exp = strtoupper(htmlspecialchars($_GET['collection_exp']));
   $priorite = "collection_exp";
   $entite = $collection_exp;
-	//Création des listes des auteurs appartenant à la collection spécifiée pour la liste
-  include "./pvt/ExtractionHAL-auteurs.php";
-  $listenominit = "~";
+	
+	//Initiation des listes des auteurs appartenant à la collection spécifiée pour la liste
+	$listenominit = "~";
   $listenominit2 = "~";
   $listenomcomp1 = "~";
   $listenomcomp2 = "~";
 	$arriv = "~";
 	$depar = "~";
-  foreach($AUTEURS_LISTE AS $i => $valeur) {
-    if ($AUTEURS_LISTE[$i]['collhal'] == $entite || $AUTEURS_LISTE[$i]['colleqhal'] == $entite) {
-      $listenomcomp1 .= nomCompEntier($AUTEURS_LISTE[$i]['nom'])." ".prenomCompEntier($AUTEURS_LISTE[$i]['prenom'])."~";
-      $listenomcomp2 .= prenomCompEntier($AUTEURS_LISTE[$i]['prenom'])." ".nomCompEntier($AUTEURS_LISTE[$i]['nom'])."~";
-      //si prénom composé et juste les ititiales
-      $prenom = prenomCompInit($AUTEURS_LISTE[$i]['prenom']);
-      $listenominit .= nomCompEntier($AUTEURS_LISTE[$i]['nom'])." ".$prenom."~";
-      $listenominit2 .= $prenom." ".nomCompEntier($AUTEURS_LISTE[$i]['nom'])."~";
-			if (isset($AUTEURS_LISTE[$i]['arriv']) && $AUTEURS_LISTE[$i]['arriv'] != "") {
-				$arriv .= $AUTEURS_LISTE[$i]['arriv']."~";
-			}else{
-				$arriv .= "1900~";
-			}
-			if (isset($AUTEURS_LISTE[$i]['depar']) && $AUTEURS_LISTE[$i]['depar'] != "") {
-				$depar .= $AUTEURS_LISTE[$i]['depar']."~";
-			}else{
-        $moisactuel = date('n', time());
-        if ($moisactuel >= 10) {$idepar = date('Y', time())+1;}else{$idepar = date('Y', time());}
-        $depar .= $idepar."~";
-			}
-    }
-  }
 }
 
 $equipe_recherche_exp = "";
