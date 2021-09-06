@@ -358,7 +358,7 @@ if (isset($_GET['mailto']) && ($_GET['mailto'] != "")) {
 if (isset($_GET['css']) && ($_GET['css'] != "")) {
   $css = htmlspecialchars($_GET['css']);
 }else{
-  $css = "https://ecobio.univ-rennes1.fr/HAL_SCD.css";
+  $css = "https://halur1.univ-rennes1.fr/HAL_SCD.css";
 }
 if (isset($_GET['bt']) && ($_GET['bt'] != "")) {
   $bt = htmlspecialchars($_GET['bt']);
@@ -1452,9 +1452,9 @@ while (isset($labosur[$ii])) {
           $pdf1[$i] = str_replace(array("http://","https://","http//","https//"), "", $pdf1[$i]);
       }
       if (strpos($pdf1[$i], "inserm") === false) {
-        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='https://".$pdf1[$i]."'><img alt='".$form11."' src='https://ecobio.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
+        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='https://".$pdf1[$i]."'><img alt='".$form11."' src='https://halur1.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
       }else{
-        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='http://".$pdf1[$i]."'><img alt='".$form11."' src='https://ecobio.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
+        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='http://".$pdf1[$i]."'><img alt='".$form11."' src='https://halur1.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
       }
     }
     if (isset($typdocxml[$i])) {
@@ -1505,7 +1505,7 @@ while (isset($labosur[$ii])) {
       $url = str_replace(array("http://", "https://"), "",$uri[$i]);
       $pos = strpos($url, "/")+1;
       $url = substr($url, $pos, (strlen($url)-$pos));
-      $bibtex[$i] = "<a target='_blank' href='https://halur1.univ-rennes1.fr/Publis-HAL-SCD-bibtex.php?id=".$url."'><img alt='".$form10."' src='https://ecobio.univ-rennes1.fr/BIB_icon.gif' style='height: 13px; border:0;' title='BibTex' /></a> ";
+      $bibtex[$i] = "<a target='_blank' href='https://halur1.univ-rennes1.fr/Publis-HAL-SCD-bibtex.php?id=".$url."'><img alt='".$form10."' src='https://halur1.univ-rennes1.fr/BIB_icon.gif' style='height: 13px; border:0;' title='BibTex' /></a> ";
       $test = str_replace("&lt;".$url."&gt;", "", $test);
       $test = str_replace(", et al. ", "", $test);
       $test = str_replace(". .", ".", $test);
@@ -1530,7 +1530,7 @@ while (isset($labosur[$ii])) {
       $repr .= "%20-%20";
       $repr .= str_replace(array("'", " ", "[", "]"), array("’", "%20", "%5B", "%5D"), strip_tags($rvnp[$i]));
       $repr .= "%20Many%20thanks%20for%20considering%20my%20request.";
-      $repr .= "'><img style='border:0;' src='https://ecobio.univ-rennes1.fr/e107_images/custom/ReprintRequest.jpg' alt='Reprint request: Subject to availability' title='Reprint request: Subject to availability'></a>";
+      $repr .= "'><img style='border:0;' src='https://halur1.univ-rennes1.fr/ReprintRequest.jpg' alt='Reprint request: Subject to availability' title='Reprint request: Subject to availability'></a>";
       $repr .= "<br>";
     }else{
       $repr = "&nbsp;";
