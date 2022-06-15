@@ -23,7 +23,15 @@ while (stripos($urlnet, "%3C") !== false) {
   $urlnet = substr($urlnet, 0, $posi).substr($urlnet, $posf, strlen($urlnet));
 }
 if ($redir == "oui") {header("Location: ".$urlnet);}
-
+function objectToArray($object) {
+  if (!is_object( $object) && !is_array($object)) {
+    return $object;
+  }
+  if (is_object($object)) {
+    $object = get_object_vars($object);
+  }
+  return array_map('objectToArray', $object);
+}
 function suppression($dossier, $age) {
   $repertoire = opendir($dossier);
     while(false !== ($fichier = readdir($repertoire)))
@@ -1280,6 +1288,7 @@ while (isset($labosur[$ii])) {
       }
     }
     $res2 = $resgen0->getElementsByTagName('arr');
+		
     foreach($res2 as $resgen2) {
       if ($resgen2->hasAttribute("name")) {
         $quoi = $resgen2->getAttribute("name");
@@ -1292,15 +1301,16 @@ while (isset($labosur[$ii])) {
           $titleliste = "";
           $enfants = $resgen2->childNodes;
           foreach($enfants as $enfant) {
-            $titleliste = $enfant->nodeValue;
+            $titleliste .= $enfant->nodeValue;
           }
-          $titreseul[$i] = $titleliste;
+          //$titreseul[$i] = $titleliste;
+					$titreseul[$i] = $resgen2->nodeValue;
         }
         if (strpos("subTitle_s",$quoi) !== false) {
           $subtitleliste = "";
           $enfants = $resgen2->childNodes;
           foreach($enfants as $enfant) {
-            $subtitleliste = $enfant->nodeValue;
+            $subtitleliste .= $enfant->nodeValue;
           }
           $subtitle[$i] = $subtitleliste;
         }
@@ -1327,7 +1337,7 @@ while (isset($labosur[$ii])) {
           $filesliste = "";
           $enfants = $resgen2->childNodes;
           foreach($enfants as $enfant) {
-            $filesliste = $enfant->nodeValue;
+            $filesliste .= $enfant->nodeValue;
           }
           $pdf1[$i] = $filesliste;
         }
@@ -1336,7 +1346,7 @@ while (isset($labosur[$ii])) {
           $enfants = $resgen2->childNodes;
           foreach($enfants as $enfant) {
             if (strpos($enfant->nodeValue,$authidhal) !== false) {
-              $authidhal_mev = str_replace($authidhal."_FacetSep_", "", $enfant->nodeValue);
+              $authidhal_mev .= str_replace($authidhal."_FacetSep_", "", $enfant->nodeValue);
               //echo $authidhal_mev;
             }
           }
@@ -1352,11 +1362,13 @@ while (isset($labosur[$ii])) {
           foreach($enfants as $enfant) {
             //echo 'toto : '.$prenoms->item($cpt-1)->textContent.' - '.$enfant->nodeValue.'<br>';
 						if (isset($prenoms->item($cpt-1)->textContent)) {$prenomauteur = $prenoms->item($cpt-1)->textContent;}else{$prenomauteur = "";}
-            $nomabrege = $enfant->nodeValue;
-            $nomabrege = str_replace($prenomauteur, prenomCompInit($prenomauteur), $nomabrege);
-            $autliste .= $nomabrege . ", ";
-            if($cpt <= 5) {$autetal .= $enfant->nodeValue . ", ";}
-            $cpt++;
+            $nomabrege = trim($enfant->nodeValue);
+						if (!empty($nomabrege)) {
+							$nomabrege = str_replace($prenomauteur, prenomCompInit($prenomauteur), $nomabrege);
+							$autliste .= $nomabrege . ", ";
+							if($cpt <= 5) {$autetal .= $enfant->nodeValue . ", ";}
+							$cpt++;
+						}
           }
           $cpt--;
           $testetal = substr($autetal, (strlen($autetal)-8), 6);
@@ -1372,6 +1384,7 @@ while (isset($labosur[$ii])) {
           $auteursetal[$i] = $autetal;
           //$autliste = substr($autliste, 0, (strlen($autliste)-2));
           //$autliste = wd_remove_accents($autliste);
+					
           if ($lim_aut != "") {
             $cpt = 1;
             $pospv = 0;
@@ -1509,7 +1522,7 @@ while (isset($labosur[$ii])) {
     //echo $i.' => '.$label[$i].'<br>';
     //echo $i.'bis => '.$test.'<br>';
     $rvnp[$i] = $test.$presbib;
-    $rvnp[$i] = str_replace($titreseul[$i], "", $rvnp[$i]);
+		$rvnp[$i] = str_replace(trim($titreseul[$i]).". ", "", $rvnp[$i]);
 		if (isset($doinit[$i]) && $affDoi != "oui") {$rvnp[$i] = str_replace("&#x27E8;".$doinit[$i]."&#x27E9;. ", "", $rvnp[$i]);}
 		if (isset($idhal[$i]) && $affIdh != "oui") {$rvnp[$i] = str_replace("&#x27E8;".$idhal[$i]."&#x27E9;", "", $rvnp[$i]);}
     $rvnp[$i] = str_replace("  ", "", $rvnp[$i]);
