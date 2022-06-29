@@ -170,6 +170,169 @@ function nomCompEntier($nom) {
   return $nom;
 }
 
+function varAut($autvar) {
+	$tabaut = explode('~', $autvar);
+	$preaut = $tabaut[0];
+	$nomaut = $tabaut[1];
+	//auteur_exp=soizic chevance,s chevance,s. chevance,sm chevance,s.m. chevance
+	$atester = "(";
+
+	$atester .= "authFullName_t:\"".$preaut." ".$nomaut."\"%20OR%20";
+	$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preaut))." ".$nomaut."\"%20OR%20";
+	$atester .= "authFullName_t:\"".prenomCompInit($preaut)." ".$nomaut."\"%20OR%20";
+	//Si présence d'espaces dans le nom, tester aussi en les remplaçant par des tirets
+	if (strpos($nomaut, " ") !== false) {
+		$atester .= "authFullName_t:\"".$preaut." ".str_replace(" ", "-", $nomaut)."\"%20OR%20";
+		$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preaut))." ".str_replace(" ", "-", $nomaut)."\"%20OR%20";
+		$atester .= "authFullName_t:\"".prenomCompInit($preaut)." ".str_replace(" ", "-", $nomaut)."\"%20OR%20";
+	}
+	//Si présence de tirets dans le nom, tester aussi en les remplaçant par des espaces
+	if (strpos($nomaut, "-") !== false) {
+		$atester .= "authFullName_t:\"".$preaut." ".ucwords(str_replace("-", " ", $nomaut))."\"%20OR%20";
+		$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preaut))." ".ucwords(str_replace("-", " ", $nomaut))."\"%20OR%20";
+		$atester .= "authFullName_t:\"".prenomCompInit($preaut)." ".ucwords(str_replace("-", " ", $nomaut))."\"%20OR%20";
+	}
+
+	//Réitérer les tests avec prénoms 'nettoyés' des caractères accentués
+	$preautnet = wd_remove_accents($preaut);
+
+	$atester .= "authFullName_t:\"".$preautnet." ".$nomaut."\"%20OR%20";
+	$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preautnet))." ".$nomaut."\"%20OR%20";
+	$atester .= "authFullName_t:\"".prenomCompInit($preautnet)." ".$nomaut."\"%20OR%20";
+	//Si présence d'espaces dans le nom, tester aussi en les remplaçant par des tirets
+	if (strpos($nomaut, " ") !== false) {
+		$atester .= "authFullName_t:\"".$preautnet." ".str_replace(" ", "-", $nomaut)."\"%20OR%20";
+		$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preautnet))." ".str_replace(" ", "-", $nomaut)."\"%20OR%20";
+		$atester .= "authFullName_t:\"".prenomCompInit($preautnet)." ".str_replace(" ", "-", $nomaut)."\"%20OR%20";
+	}
+	//Si présence de tirets dans le nom, tester aussi en les remplaçant par des espaces
+	if (strpos($nomaut, "-") !== false) {
+		$atester .= "authFullName_t:\"".$preautnet." ".ucwords(str_replace("-", " ", $nomaut))."\"%20OR%20";
+		$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preautnet))." ".ucwords(str_replace("-", " ", $nomaut))."\"%20OR%20";
+		$atester .= "authFullName_t:\"".prenomCompInit($preautnet)." ".ucwords(str_replace("-", " ", $nomaut))."\"%20OR%20";
+	}
+
+	//Réitérer les tests avec nom 'nettoyé' des caractères accentués
+	$nomautnet = wd_remove_accents($nomaut);
+
+	$atester .= "authFullName_t:\"".$preaut." ".$nomautnet."\"%20OR%20";
+	$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preaut))." ".$nomautnet."\"%20OR%20";
+	$atester .= "authFullName_t:\"".prenomCompInit($preaut)." ".$nomautnet."\"%20OR%20";
+	//Si présence d'espaces dans le nom, tester aussi en les remplaçant par des tirets
+	if (strpos($nomautnet, " ") !== false) {
+		$atester .= "authFullName_t:\"".$preaut." ".str_replace(" ", "-", $nomautnet)."\"%20OR%20";
+		$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preaut))." ".str_replace(" ", "-", $nomautnet)."\"%20OR%20";
+		$atester .= "authFullName_t:\"".prenomCompInit($preaut)." ".str_replace(" ", "-", $nomautnet)."\"%20OR%20";
+	}
+	//Si présence de tirets dans le nom, tester aussi en les remplaçant par des espaces
+	if (strpos($nomautnet, "-") !== false) {
+		$atester .= "authFullName_t:\"".$preaut." ".ucwords(str_replace("-", " ", $nomautnet))."\"%20OR%20";
+		$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preaut))." ".ucwords(str_replace("-", " ", $nomautnet))."\"%20OR%20";
+		$atester .= "authFullName_t:\"".prenomCompInit($preaut)." ".ucwords(str_replace("-", " ", $nomautnet))."\"%20OR%20";
+	}
+
+	//Réitérer les tests avec prénoms et nom 'nettoyés' des caractères accentués
+	$preautnet = wd_remove_accents($preaut);
+	$nomautnet = wd_remove_accents($nomaut);
+
+	$atester .= "authFullName_t:\"".$preautnet." ".$nomautnet."\"%20OR%20";
+	$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preautnet))." ".$nomautnet."\"%20OR%20";
+	$atester .= "authFullName_t:\"".prenomCompInit($preautnet)." ".$nomautnet."\"%20OR%20";
+	//Si présence d'espaces dans le nom, tester aussi en les remplaçant par des tirets
+	if (strpos($nomautnet, " ") !== false) {
+		$atester .= "authFullName_t:\"".$preautnet." ".str_replace(" ", "-", $nomautnet)."\"%20OR%20";
+		$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preautnet))." ".str_replace(" ", "-", $nomautnet)."\"%20OR%20";
+		$atester .= "authFullName_t:\"".prenomCompInit($preautnet)." ".str_replace(" ", "-", $nomautnet)."\"%20OR%20";
+	}
+	//Si présence de tirets dans le nom, tester aussi en les remplaçant par des espaces
+	if (strpos($nomautnet, "-") !== false) {
+		$atester .= "authFullName_t:\"".$preautnet." ".ucwords(str_replace("-", " ", $nomautnet))."\"%20OR%20";
+		$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preautnet))." ".ucwords(str_replace("-", " ", $nomautnet))."\"%20OR%20";
+		$atester .= "authFullName_t:\"".prenomCompInit($preautnet)." ".ucwords(str_replace("-", " ", $nomautnet))."\"%20OR%20";
+	}
+
+	//Réitérer si présence d'un nom alternatif
+	if (isset($altaut) && $altaut != "") {
+		$atester .= "authFullName_t:\"".$preaut." ".$altaut."\"%20OR%20";
+		$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preaut))." ".$altaut."\"%20OR%20";
+		$atester .= "authFullName_t:\"".prenomCompInit($preaut)." ".$altaut."\"%20OR%20";
+		//Si présence d'espaces dans le nom, tester aussi en les remplaçant par des tirets
+		if (strpos($altaut, " ") !== false) {
+			$atester .= "authFullName_t:\"".$preaut." ".str_replace(" ", "-", $altaut)."\"%20OR%20";
+			$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preaut))." ".str_replace(" ", "-", $altaut)."\"%20OR%20";
+			$atester .= "authFullName_t:\"".prenomCompInit($preaut)." ".str_replace(" ", "-", $altaut)."\"%20OR%20";
+		}
+		//Si présence de tirets dans le nom, tester aussi en les remplaçant par des espaces
+		if (strpos($altaut, "-") !== false) {
+			$atester .= "authFullName_t:\"".$preaut." ".ucwords(str_replace("-", " ", $altaut))."\"%20OR%20";
+			$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preaut))." ".ucwords(str_replace("-", " ", $altaut))."\"%20OR%20";
+			$atester .= "authFullName_t:\"".prenomCompInit($preaut)." ".ucwords(str_replace("-", " ", $altaut))."\"%20OR%20";
+		}
+		
+		//Réitérer les tests avec prénoms 'nettoyés' des caractères accentués
+		$preautnet = wd_remove_accents($preaut);
+		
+		$atester .= "authFullName_t:\"".$preautnet." ".$altaut."\"%20OR%20";
+		$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preautnet))." ".$altaut."\"%20OR%20";
+		$atester .= "authFullName_t:\"".prenomCompInit($preautnet)." ".$altaut."\"%20OR%20";
+		//Si présence d'espaces dans le nom, tester aussi en les remplaçant par des tirets
+		if (strpos($altaut, " ") !== false) {
+			$atester .= "authFullName_t:\"".$preautnet." ".str_replace(" ", "-", $altaut)."\"%20OR%20";
+			$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preautnet))." ".str_replace(" ", "-", $altaut)."\"%20OR%20";
+			$atester .= "authFullName_t:\"".prenomCompInit($preautnet)." ".str_replace(" ", "-", $altaut)."\"%20OR%20";
+		}
+		//Si présence de tirets dans le nom, tester aussi en les remplaçant par des espaces
+		if (strpos($altaut, "-") !== false) {
+			$atester .= "authFullName_t:\"".$preautnet." ".ucwords(str_replace("-", " ", $altaut))."\"%20OR%20";
+			$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preautnet))." ".ucwords(str_replace("-", " ", $altaut))."\"%20OR%20";
+			$atester .= "authFullName_t:\"".prenomCompInit($preautnet)." ".ucwords(str_replace("-", " ", $altaut))."\"%20OR%20";
+		}
+		
+		//Réitérer les tests avec nom 'nettoyé' des caractères accentués
+		$altautnet = wd_remove_accents($altaut);
+		
+		$atester .= "authFullName_t:\"".$preaut." ".$altautnet."\"%20OR%20";
+		$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preaut))." ".$altautnet."\"%20OR%20";
+		$atester .= "authFullName_t:\"".prenomCompInit($preaut)." ".$altautnet."\"%20OR%20";
+		//Si présence d'espaces dans le nom, tester aussi en les remplaçant par des tirets
+		if (strpos($altautnet, " ") !== false) {
+			$atester .= "authFullName_t:\"".$preaut." ".str_replace(" ", "-", $altautnet)."\"%20OR%20";
+			$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preaut))." ".str_replace(" ", "-", $altautnet)."\"%20OR%20";
+			$atester .= "authFullName_t:\"".prenomCompInit($preaut)." ".str_replace(" ", "-", $altautnet)."\"%20OR%20";
+		}
+		//Si présence de tirets dans le nom, tester aussi en les remplaçant par des espaces
+		if (strpos($altautnet, "-") !== false) {
+			$atester .= "authFullName_t:\"".$preaut." ".ucwords(str_replace("-", " ", $altautnet))."\"%20OR%20";
+			$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preaut))." ".ucwords(str_replace("-", " ", $altautnet))."\"%20OR%20";
+			$atester .= "authFullName_t:\"".prenomCompInit($preaut)." ".ucwords(str_replace("-", " ", $altautnet))."\"%20OR%20";
+		}
+
+		//Réitérer les tests avec prénom et nom 'nettoyés' des caractères accentués
+		$preautnet = wd_remove_accents($preaut);
+		$altautnet = wd_remove_accents($altaut);
+		
+		$atester .= "authFullName_t:\"".$preautnet." ".$altautnet."\"%20OR%20";
+		$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preautnet))." ".$altautnet."\"%20OR%20";
+		$atester .= "authFullName_t:\"".prenomCompInit($preautnet)." ".$altautnet."\"%20OR%20";
+		//Si présence d'espaces dans le nom, tester aussi en les remplaçant par des tirets
+		if (strpos($altautnet, " ") !== false) {
+			$atester .= "authFullName_t:\"".$preautnet." ".str_replace(" ", "-", $altautnet)."\"%20OR%20";
+			$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preautnet))." ".str_replace(" ", "-", $altautnet)."\"%20OR%20";
+			$atester .= "authFullName_t:\"".prenomCompInit($preautnet)." ".str_replace(" ", "-", $altautnet)."\"%20OR%20";
+		}
+		//Si présence de tirets dans le nom, tester aussi en les remplaçant par des espaces
+		if (strpos($altautnet, "-") !== false) {
+			$atester .= "authFullName_t:\"".$preautnet." ".ucwords(str_replace("-", " ", $altautnet))."\"%20OR%20";
+			$atester .= "authFullName_t:\"".str_replace(".", "", prenomCompInit($preautnet))." ".ucwords(str_replace("-", " ", $altautnet))."\"%20OR%20";
+			$atester .= "authFullName_t:\"".prenomCompInit($preautnet)." ".ucwords(str_replace("-", " ", $altautnet))."\"%20OR%20";
+		}
+	}
+
+	$atester = substr($atester, 0, (strlen($atester) - 8));
+	$atester .= ")";
+	return $atester;
+}
+
 //Suppression des fichiers du dossier HAL créés il y a plus d'une heure
 suppression("./HAL", 3600);
 
@@ -324,6 +487,20 @@ if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "") && strpos($_GET['a
   if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "")) {
     $auteur_exp = htmlspecialchars($_GET['auteur_exp']);
   }
+}
+
+$autvar = "";
+if (isset($_GET['autvar']) && !empty($_GET['autvar'])) {
+	$autvar = $_GET['autvar'];
+	$tabaut = explode('~', $autvar);
+	$preaut = $tabaut[0];
+	$nomaut = $tabaut[1];
+	$listenominit = "~".$nomaut." ".$preaut.".~";
+	$listenominit2 = "~".$preaut." ".$nomaut."~";
+	$arriv = "1900~";
+	$moisactuel = date('n', time());
+	if ($moisactuel >= 10) {$idepar = date('Y', time())+1;}else{$idepar = date('Y', time());}
+	$depar = $idepar."~";	
 }
 
 //année n ou n+1 ?
@@ -748,7 +925,7 @@ if ($typform == $form9s) {//formulaire de recherche complet
       if (strpos($annee_excl, strval($i)) === false) {
 				$presbibUrl = "";
 				if ($presbib =="<br>") {$presbibUrl = "br";}
-        $text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdoc."&typform=".str_replace(' ', '%20', $typform)."&anneedeb=".$i."&anneefin=".$i."&titre=".$titre."&aut=".$aut."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&ids=".$ids."&primary=".$primary."&secondary=".$secondary."&detail=".$detail."&affDoi=".$affDoi."&affIdh=".$affIdh."&ipas=".$ipas."&typord=".$typord."&acc=noninit\">".$i."</a>&nbsp;&nbsp;&nbsp;\r\n";
+        $text .= "<a href=\"?autvar=".$autvar."&labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdoc."&typform=".str_replace(' ', '%20', $typform)."&anneedeb=".$i."&anneefin=".$i."&titre=".$titre."&aut=".$aut."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&ids=".$ids."&primary=".$primary."&secondary=".$secondary."&detail=".$detail."&affDoi=".$affDoi."&affIdh=".$affIdh."&ipas=".$ipas."&typord=".$typord."&acc=noninit\">".$i."</a>&nbsp;&nbsp;&nbsp;\r\n";
       }
       $i--;
     }
@@ -796,8 +973,8 @@ if ($typform == $form9s) {//formulaire de recherche complet
   }
 }
 
-if (((isset($_GET['aut']) && $_GET['aut'] != "") || (isset($_GET['titre']) && $_GET['titre'] != "") || (isset($_GET['typdoc']) && $_GET['typdoc'] != "(\'ART\',\'COMM\')")) && (($typform != $form9p) && (isset($_GET['form']) && $_GET['form'] != "aucun") && (isset($_GET['acc']) && $_GET['acc'] != "init"))) {
-	$text .= "<div class='retour'><a href='".$_SERVER['PHP_SELF']."?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&typform=".str_replace(' ', '%20', $typform)."&typdoc=".$typdoc."&detail=".$detail."&ids=".$ids."&primary=".$primary."&secondary=".$secondary."&acc=init'>".$reinit."</a></div><br><br>\r\n";
+if (((isset($_GET['autvar']) && $_GET['autvar'] != "") || (isset($_GET['aut']) && $_GET['aut'] != "") || (isset($_GET['titre']) && $_GET['titre'] != "") || (isset($_GET['typdoc']) && $_GET['typdoc'] != "(\'ART\',\'COMM\')")) && (($typform != $form9p) && (isset($_GET['form']) && $_GET['form'] != "aucun") && (isset($_GET['acc']) && $_GET['acc'] != "init"))) {
+	$text .= "<div class='retour'><a href='".$_SERVER['PHP_SELF']."?autvar=".$autvar."&labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&typform=".str_replace(' ', '%20', $typform)."&typdoc=".$typdoc."&detail=".$detail."&ids=".$ids."&primary=".$primary."&secondary=".$secondary."&acc=init'>".$reinit."</a></div><br><br>\r\n";
 }
 
 $labo2 = $labocrit;
@@ -855,8 +1032,8 @@ while (isset($labosur[$ii])) {
 
   //Extraction des résultats
   $dom = new DomDocument;
-  //$URL = 'http://api-preprod.archives-ouvertes.fr/search/?wt=xml&q=labStructCode_s:"UMR6553"&fq=producedDateY_i:"2014"&fl=title_s,label_s,uri_s,abstract_s,docType_s,doiId_s,label_bibtex,keyword_s,authFullName_t&sort=auth_sort asc';
-  //$URL = 'http://api-preprod.archives-ouvertes.fr/search/?wt=xml&q=labStructAcronym_s:"GR"&rows=100000&fq=producedDateY_i:"2014" AND producedDateY_i:"2013"&fl=title_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_t,bookTitle_s,conferenceTitle_s,&sort=auth_sort asc';
+  //$URL = 'http://api-preprod.archives-ouvertes.fr/search/?wt=xml&q=labStructCode_s:"UMR6553"&fq=producedDateY_i:"2014"&fl=title_s,label_s,uri_s,abstract_s,docType_s,doiId_s,label_bibtex,keyword_s,authFullName_s&sort=auth_sort asc';
+  //$URL = 'http://api-preprod.archives-ouvertes.fr/search/?wt=xml&q=labStructAcronym_s:"GR"&rows=100000&fq=producedDateY_i:"2014" AND producedDateY_i:"2013"&fl=title_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_s,bookTitle_s,conferenceTitle_s,&sort=auth_sort asc';
   $root = 'http';
 	if ( isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
     $root.= "s";
@@ -901,6 +1078,8 @@ while (isset($labosur[$ii])) {
       $URL .= ')';
     }
   }
+	if (!empty($autvar)) {$URL = $root.'://api.archives-ouvertes.fr/search/?wt=xml&rows=100000&fq=producedDateY_i:"'.$anneedeb.'" AND '.varAut($autvar);}
+	
   if ($auteur_exp != "" && $collection_exp == "") {
     //On limite l'URL à juste une recherche sur auteur_exp toutes collections confondues, mais en ajoutant après le type de documents recherché
     $URL = $root.'://api.archives-ouvertes.fr/search/?wt=xml&rows=100000&fq=';
@@ -1199,7 +1378,6 @@ while (isset($labosur[$ii])) {
 		$results = json_decode($contents);
 		$numFound = 0;
 		if (isset($results->response->numFound)) {$numFound=$results->response->numFound;}
-		
 		if ($numFound != 0) {
 			$tabId = explode(",", $ids);
 			foreach($tabId as $Id) {
@@ -2100,7 +2278,7 @@ if ($halid == "") {
 			if ($ifin > $irec) {$ifin = $irec;}
 			$presbibUrl = "";
 			if ($presbib =="<br>") {$presbibUrl = "br";}
-			$text .= "<a href=\"?labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdocinit."&anneedeb=".$anneedeb."&anneefin=".$anneefin."&titre=".$titre."&aut=".$aut."&ipas=".$ipas."&typord=".$typord."&ideb=".$ideb."&ifin=".$ifin."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&ids=".$ids."&primary=".$primary."&secondary=".$secondary."&detail=".$detail."&typform=".str_replace(' ', '%20', $typform)."&affDoi=".$affDoi."&affIdh=".$affIdh."&acc=noninit\">".$ideb."-".$ifin."</a>&nbsp;&nbsp;&nbsp;\r\n";
+			$text .= "<a href=\"?autvar=".$autvar."&labo=".$labo."&collection_exp=".$collection_exp."&equipe_recherche_exp=".$equipe_recherche_exp."&auteur_exp=".$auteur_exp."&mailto=".$mailto."&lang=".$lang."&css=".$css."&form=".$form."&tous=".$tous."&annee_publideb=".$annee_publideb."&anneedep=".$anneedep."&lim_aut=".$lim_aut."&annee_excl=".$annee_excl."&bt=".$bt."&presbib=".$presbibUrl."&labocrit=".$labocrit."&typdoc=".$typdocinit."&anneedeb=".$anneedeb."&anneefin=".$anneefin."&titre=".$titre."&aut=".$aut."&ipas=".$ipas."&typord=".$typord."&ideb=".$ideb."&ifin=".$ifin."&authidhal=".$authidhal."&authidhali=".$authidhali."&authid=".$authid."&notauthid=".$notauthid."&nothal=".$nothal."&lienpubmed=".$lienpubmed."&mef=".$mef."&ids=".$ids."&primary=".$primary."&secondary=".$secondary."&detail=".$detail."&typform=".str_replace(' ', '%20', $typform)."&affDoi=".$affDoi."&affIdh=".$affIdh."&acc=noninit\">".$ideb."-".$ifin."</a>&nbsp;&nbsp;&nbsp;\r\n";
 			$i++;
 		}
 	}
