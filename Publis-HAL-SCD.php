@@ -855,8 +855,8 @@ while (isset($labosur[$ii])) {
 
   //Extraction des résultats
   $dom = new DomDocument;
-  //$URL = 'http://api-preprod.archives-ouvertes.fr/search/?wt=xml&q=labStructCode_s:"UMR6553"&fq=producedDateY_i:"2014"&fl=title_s,label_s,uri_s,abstract_s,docType_s,doiId_s,label_bibtex,keyword_s,authFullName_s&sort=auth_sort asc';
-  //$URL = 'http://api-preprod.archives-ouvertes.fr/search/?wt=xml&q=labStructAcronym_s:"GR"&rows=100000&fq=producedDateY_i:"2014" AND producedDateY_i:"2013"&fl=title_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_s,bookTitle_s,conferenceTitle_s,&sort=auth_sort asc';
+  //$URL = 'http://api-preprod.archives-ouvertes.fr/search/?wt=xml&q=labStructCode_s:"UMR6553"&fq=producedDateY_i:"2014"&fl=title_s,label_s,uri_s,abstract_s,docType_s,doiId_s,label_bibtex,keyword_s,authFullName_t&sort=auth_sort asc';
+  //$URL = 'http://api-preprod.archives-ouvertes.fr/search/?wt=xml&q=labStructAcronym_s:"GR"&rows=100000&fq=producedDateY_i:"2014" AND producedDateY_i:"2013"&fl=title_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_t,bookTitle_s,conferenceTitle_s,&sort=auth_sort asc';
   $root = 'http';
 	if ( isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
     $root.= "s";
@@ -887,15 +887,15 @@ while (isset($labosur[$ii])) {
 
   if ($auteur_exp != "") {
     if (strpos($auteur_exp, ",") === false) {
-      $URL .= ' AND authFullName_s:"'.$auteur_exp.'"';
+      $URL .= ' AND authFullName_t:"'.$auteur_exp.'"';
     }else{
       $diffaut = explode(",", $auteur_exp);
       $iaut = 0;
       while (isset($diffaut[$iaut])) {
         if ($iaut == 0) {$URL .= " AND (";}else{$URL .= " OR";}
         $auteur_exp2 = $diffaut[$iaut];
-        $URL .= ' authFullName_s:"'.$auteur_exp2.'"';
-				$URL .= ' OR authFullName_s:"'.str_replace(".", "", $auteur_exp2).'"';
+        $URL .= ' authFullName_t:"'.$auteur_exp2.'"';
+				$URL .= ' OR authFullName_t:"'.str_replace(".", "", $auteur_exp2).'"';
         $iaut++;
       }
       $URL .= ')';
@@ -905,15 +905,15 @@ while (isset($labosur[$ii])) {
     //On limite l'URL à juste une recherche sur auteur_exp toutes collections confondues, mais en ajoutant après le type de documents recherché
     $URL = $root.'://api.archives-ouvertes.fr/search/?wt=xml&rows=100000&fq=';
     if (strpos($auteur_exp, ",") === false) {
-      $URL .= 'authFullName_s:"'.$auteur_exp.'"';
+      $URL .= 'authFullName_t:"'.$auteur_exp.'"';
     }else{
       $diffaut = explode(",", $auteur_exp);
       $iaut = 0;
       while (isset($diffaut[$iaut])) {
         if ($iaut == 0) {$URL .= "(";}else{$URL .= " OR";}
         $auteur_exp2 = $diffaut[$iaut];
-        $URL .= ' authFullName_s:"'.$auteur_exp2.'"';
-				$URL .= ' OR authFullName_s:"'.str_replace(".", "", $auteur_exp2).'"';
+        $URL .= ' authFullName_t:"'.$auteur_exp2.'"';
+				$URL .= ' OR authFullName_t:"'.str_replace(".", "", $auteur_exp2).'"';
         $iaut++;
       }
       $URL .= ')';
@@ -1152,7 +1152,7 @@ while (isset($labosur[$ii])) {
     }
   }
 
-	$URL .= '&fl=title_s,subTitle_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_s,bookTitle_s,conferenceTitle_s,fileMain_s,files_s,halId_s,label_bibtex,volume_s,issue_s,page_s,journalPublisher_s,scientificEditor_s,pubmedId_s,audience_s,peerReviewing_s,authIdHalFullName_fs,authFirstName_s,language_s,authLastName_s,authIdHasPrimaryStructure_fs&sort=auth_sort asc';
+	$URL .= '&fl=title_s,subTitle_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_t,bookTitle_s,conferenceTitle_s,fileMain_s,files_s,halId_s,label_bibtex,volume_s,issue_s,page_s,journalPublisher_s,scientificEditor_s,pubmedId_s,audience_s,peerReviewing_s,authIdHalFullName_fs,authFirstName_s,language_s,authLastName_s,authIdHasPrimaryStructure_fs&sort=auth_sort asc';
   $URL = str_replace(" ", "%20", $URL);
   //echo ("toto : ".$URL);
 
@@ -1210,7 +1210,7 @@ while (isset($labosur[$ii])) {
 						 if (strpos($tabAuth[1], $Id) !== false) {//Auteur de la collection
 							 $tabQ = explode("_JoinSep_", $tabAuth[1]);
 							 $indQ = 0;
-							 foreach($entry->authFullName_s as $funa){
+							 foreach($entry->authFullName_t as $funa){
 								 //if ($funa == $tabQ[0] && strpos($listenominit, $entry->authFirstName_s[$indQ]) === false) {
 								 if ($funa == $tabQ[0] && strpos($listenominit, nomCompEntier($entry->authLastName_s[$indQ])." ".prenomCompInit($entry->authFirstName_s[$indQ])) === false) {
 									 $prenom = prenomCompInit($entry->authFirstName_s[$indQ]);
@@ -1354,7 +1354,7 @@ while (isset($labosur[$ii])) {
         if (strpos("authFirstName_s",$quoi) !== false) {
           $prenoms = $resgen2->childNodes;
         }
-        if (strpos("authFullName_s",$quoi) !== false) {
+        if (strpos("authFullName_t",$quoi) !== false) {
           $cpt = 1;
           $autliste = "";
           $autetal = "";
