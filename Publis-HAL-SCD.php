@@ -1078,7 +1078,12 @@ while (isset($labosur[$ii])) {
       $URL .= ')';
     }
   }
-	if (!empty($autvar)) {$URL = $root.'://api.archives-ouvertes.fr/search/?wt=xml&rows=100000&fq=producedDateY_i:"'.$anneedeb.'" AND '.varAut($autvar);}
+	if (!empty($autvar)) {
+		$anneedeb = 1970;
+		$anneefin = date('Y', time());
+		$URL = $root.'://api.archives-ouvertes.fr/search/?wt=xml&rows=100000&fq=producedDateY_i:["'.$anneedeb.'" TO "'.$anneefin.'"] AND '.varAut($autvar);
+		//echo $URL;
+	}
 	
   if ($auteur_exp != "" && $collection_exp == "") {
     //On limite l'URL à juste une recherche sur auteur_exp toutes collections confondues, mais en ajoutant après le type de documents recherché
