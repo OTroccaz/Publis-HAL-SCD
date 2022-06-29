@@ -1081,7 +1081,13 @@ while (isset($labosur[$ii])) {
 	if (!empty($autvar)) {
 		$anneedeb = 1970;
 		$anneefin = date('Y', time());
-		$URL = $root.'://api.archives-ouvertes.fr/search/?wt=xml&rows=100000&fq=producedDateY_i:["'.$anneedeb.'" TO "'.$anneefin.'"] AND '.varAut($autvar);
+		$collection_exp = "";
+		if (!empty($_GET["collection_exp"])) {
+			$collection_exp = $_GET["collection_exp"];
+			$URL = $root.'://api.archives-ouvertes.fr/search/?wt=xml&rows=100000&fq=producedDateY_i:["'.$anneedeb.'" TO "'.$anneefin.'"] AND collCode_s:'.$collection_exp.' AND '.varAut($autvar);
+		}else{
+			$URL = $root.'://api.archives-ouvertes.fr/search/?wt=xml&rows=100000&fq=producedDateY_i:["'.$anneedeb.'" TO "'.$anneefin.'"] AND '.varAut($autvar);
+		}
 		//echo $URL;
 	}
 	
