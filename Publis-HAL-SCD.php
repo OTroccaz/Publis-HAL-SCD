@@ -1152,7 +1152,7 @@ while (isset($labosur[$ii])) {
     }
   }
 
-	$URL .= '&fl=title_s,subTitle_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_t,bookTitle_s,conferenceTitle_s,fileMain_s,files_s,halId_s,label_bibtex,volume_s,issue_s,page_s,journalPublisher_s,scientificEditor_s,pubmedId_s,audience_s,peerReviewing_s,authIdHalFullName_fs,authFirstName_s,language_s,authLastName_s,authIdHasPrimaryStructure_fs&sort=auth_sort asc';
+	$URL .= '&fl=title_s,subTitle_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_s,authFullName_t,bookTitle_s,conferenceTitle_s,fileMain_s,files_s,halId_s,label_bibtex,volume_s,issue_s,page_s,journalPublisher_s,scientificEditor_s,pubmedId_s,audience_s,peerReviewing_s,authIdHalFullName_fs,authFirstName_s,language_s,authLastName_s,authIdHasPrimaryStructure_fs&sort=auth_sort asc';
   $URL = str_replace(" ", "%20", $URL);
   //echo ("toto : ".$URL);
 
@@ -1210,7 +1210,7 @@ while (isset($labosur[$ii])) {
 						 if (strpos($tabAuth[1], $Id) !== false) {//Auteur de la collection
 							 $tabQ = explode("_JoinSep_", $tabAuth[1]);
 							 $indQ = 0;
-							 foreach($entry->authFullName_t as $funa){
+							 foreach($entry->authFullName_s as $funa){
 								 //if ($funa == $tabQ[0] && strpos($listenominit, $entry->authFirstName_s[$indQ]) === false) {
 								 if ($funa == $tabQ[0] && strpos($listenominit, nomCompEntier($entry->authLastName_s[$indQ])." ".prenomCompInit($entry->authFirstName_s[$indQ])) === false) {
 									 $prenom = prenomCompInit($entry->authFirstName_s[$indQ]);
@@ -1354,7 +1354,7 @@ while (isset($labosur[$ii])) {
         if (strpos("authFirstName_s",$quoi) !== false) {
           $prenoms = $resgen2->childNodes;
         }
-        if (strpos("authFullName_t",$quoi) !== false) {
+        if (strpos("authFullName_s",$quoi) !== false) {
           $cpt = 1;
           $autliste = "";
           $autetal = "";
