@@ -495,8 +495,10 @@ if (isset($_GET['autvar']) && !empty($_GET['autvar'])) {
 	$tabaut = explode('~', $autvar);
 	$preaut = $tabaut[0];
 	$nomaut = $tabaut[1];
-	$listenominit = "~".$nomaut." ".$preaut."~".$nomaut." ".substr($preaut, 0, 1).".~".$nomaut." ".substr($preaut, 0, 1)."~";
-	$listenominit2 = "~".$preaut." ".$nomaut."~".substr($preaut, 0, 1).". ".$nomaut."~".substr($preaut, 0, 1)." ".$nomaut."~";
+	//$listenominit = "~".$nomaut." ".$preaut."~".$nomaut." ".substr($preaut, 0, 1).".~".$nomaut." ".substr($preaut, 0, 1)."~";
+	//$listenominit2 = "~".$preaut." ".$nomaut."~".substr($preaut, 0, 1).". ".$nomaut."~".substr($preaut, 0, 1)." ".$nomaut."~";
+	$listenominit = "~".$nomaut." ".$preaut."~".$nomaut." ".prenomCompInit($preaut)."~".$nomaut." ".substr(prenomCompInit($preaut), 0, -1)."~";
+	$listenominit2 = "~".$preaut." ".$nomaut."~".prenomCompInit($preaut)." ".$nomaut."~".substr(prenomCompInit($preaut), 0, -1)." ".$nomaut."~";
 	$arriv = "~1900~1900~1900~";
 	$moisactuel = date('n', time());
 	if ($moisactuel >= 10) {$idepar = date('Y', time())+1;}else{$idepar = date('Y', time());}
