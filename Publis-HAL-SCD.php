@@ -491,7 +491,7 @@ if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "") && strpos($_GET['a
 
 $autvar = "";
 if (isset($_GET['autvar']) && !empty($_GET['autvar'])) {
-	$autvar = $_GET['autvar'];
+	$autvar = wd_remove_accents($_GET['autvar']);
 	$tabaut = explode('~', $autvar);
 	$preaut = $tabaut[0];
 	$nomaut = $tabaut[1];
