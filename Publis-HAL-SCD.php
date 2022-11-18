@@ -481,11 +481,11 @@ if (isset($_GET['equipe_recherche_exp']) && ($_GET['equipe_recherche_exp'] != ""
 $auteur_exp = "";
 if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "") && strpos($_GET['auteur_exp'], ",") === false) {
   //$auteur_exp = wd_remove_accents(ucwords($_GET['auteur_exp']));
-  $auteur_exp = prenomCompEntier(htmlspecialchars($_GET['auteur_exp']));
+  $auteur_exp = prenomCompEntier(htmlspecialchars(wd_remove_accents($_GET['auteur_exp'])));
   //$auteur_exp = str_replace("'", "\'", $auteur_exp);
 }else{
   if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "")) {
-    $auteur_exp = htmlspecialchars($_GET['auteur_exp']);
+    $auteur_exp = htmlspecialchars(wd_remove_accents($_GET['auteur_exp']));
   }
 }
 
