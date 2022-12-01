@@ -1427,7 +1427,7 @@ while (isset($labosur[$ii])) {
 			}
 		}
 	}
-	echo $listenominit;
+	
   $anneepre = $anneedeb - 1;
   if ($resinit == 0 && $anneepre == date('Y', time())) {//Si, en fin d'année n, il n'y a pas de résultat, on recherche sur l'année n-1
     $URL = str_replace($anneedeb, $anneepre, $URL);
