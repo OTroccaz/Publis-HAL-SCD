@@ -1405,8 +1405,13 @@ while (isset($labosur[$ii])) {
 								 //if ($funa == $tabQ[0] && strpos($listenominit, $entry->authFirstName_s[$indQ]) === false) {
 								 if ($funa == $tabQ[0] && strpos($listenominit, nomCompEntier($entry->authLastName_s[$indQ])." ".prenomCompInit($entry->authFirstName_s[$indQ])) === false) {
 									 $prenom = prenomCompInit($entry->authFirstName_s[$indQ]);
-									 $listenominit .= nomCompEntier($entry->authLastName_s[$indQ])." ".$prenom.".~";
-									 $listenominit2 .= $prenom." ".nomCompEntier($entry->authLastName_s[$indQ])."~";
+									 //$listenominit .= nomCompEntier($entry->authLastName_s[$indQ])." ".$prenom.".~";
+									 //$listenominit2 .= $prenom." ".nomCompEntier($entry->authLastName_s[$indQ])."~";
+									 $preaut = $entry->authFirstName_s[$indQ];
+									 $listenominit .= nomCompEntier($entry->authLastName_s[$indQ])." ".$preaut."~".nomCompEntier($entry->authLastName_s[$indQ])." ".prenomCompInit($preaut)."~".nomCompEntier($entry->authLastName_s[$indQ])." ".substr(prenomCompInit($preaut), 0, -1)."~";
+									 $listenominit2 .= $preaut." ".nomCompEntier($entry->authLastName_s[$indQ])."~".prenomCompInit($preaut)." ".nomCompEntier($entry->authLastName_s[$indQ])."~".substr(prenomCompInit($preaut), 0, -1)." ".nomCompEntier($entry->authLastName_s[$indQ])."~";
+									 
+									 
 									 $arriv .= "1900~";
 									 $moisactuel = date('n', time());
 									 if ($moisactuel >= 10) {$idepar = date('Y', time())+1;}else{$idepar = date('Y', time());}
@@ -1422,7 +1427,7 @@ while (isset($labosur[$ii])) {
 			}
 		}
 	}
-	
+	echo $listenominit;
   $anneepre = $anneedeb - 1;
   if ($resinit == 0 && $anneepre == date('Y', time())) {//Si, en fin d'année n, il n'y a pas de résultat, on recherche sur l'année n-1
     $URL = str_replace($anneedeb, $anneepre, $URL);
