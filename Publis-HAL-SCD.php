@@ -517,8 +517,10 @@ if (date ('m') == 11 || date ('m') == 12) {
   curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur1.univ-rennes1.fr)');
   curl_setopt($ch, CURLOPT_USERAGENT, 'PROXY (http://siproxy.univ-rennes1.fr)');
   if (isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
+	}else{
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	}
   $resultat = curl_exec($ch);
   curl_close($ch);
@@ -1360,6 +1362,8 @@ while (isset($labosur[$ii])) {
 	if (isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 		curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
+	}else{
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	}
   $resultat = curl_exec($ch);
 
