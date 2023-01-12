@@ -386,7 +386,7 @@ if ($lang == "fr") {//français
   $consult2 = "publications en libre accès sur HAL";
   $result1 = "De ";
   $result2 = " à ";
-  $result3 = "Aucune publication";
+  $result3 = "Prochainement";
   $result3bis = "Affinez vos critères de recherche: plus de 5000 publications constituent l'extraction initiale.";
   $result3_1 = "<u>Remarque :</u> Seuls les ";
   $result3_2 = " premiers auteurs sont affichés.";
@@ -438,7 +438,7 @@ if ($lang == "fr") {//français
   $consult2 = "Open Access Repository";
   $result1 = "From ";
   $result2 = " to ";
-  $result3 = "No publication";
+  $result3 = "Coming soon";
   $result3bis = "Refine your search criteria: more than 5000 publications constitute the initial extraction.";
   $result3_1 = "<u>Note:</u> when necessary, only the first ";
   $result3_2 = " authors are displayed.";
@@ -1400,27 +1400,29 @@ while (isset($labosur[$ii])) {
 			foreach($tabId as $Id) {
 			 if ($Id != "") {
 				 foreach($results->response->docs as $entry){
-					 foreach($entry->authIdHasPrimaryStructure_fs as $auth){
-						 $tabAuth = explode("_FacetSep_", $auth);
-						 if (strpos($tabAuth[1], $Id) !== false) {//Auteur de la collection
-							 $tabQ = explode("_JoinSep_", $tabAuth[1]);
-							 $indQ = 0;
-							 foreach($entry->authFullName_s as $funa){
-								 //if ($funa == $tabQ[0] && strpos($listenominit, $entry->authFirstName_s[$indQ]) === false) {
-								 if ($funa == $tabQ[0] && strpos($listenominit, nomCompEntier($entry->authLastName_s[$indQ])." ".$entry->authFirstName_s[$indQ]) === false) {
-									 $prenom = prenomCompInit($entry->authFirstName_s[$indQ]);
-									 //$listenominit .= nomCompEntier($entry->authLastName_s[$indQ])." ".$prenom.".~";
-									 //$listenominit2 .= $prenom." ".nomCompEntier($entry->authLastName_s[$indQ])."~";
-									 $preaut = $entry->authFirstName_s[$indQ];
-									 $listenominit .= nomCompEntier($entry->authLastName_s[$indQ])." ".$preaut."~".nomCompEntier($entry->authLastName_s[$indQ])." ".prenomCompInit($preaut)."~".nomCompEntier($entry->authLastName_s[$indQ])." ".substr(prenomCompInit($preaut), 0, -1)."~";
-									 $listenominit2 .= $preaut." ".nomCompEntier($entry->authLastName_s[$indQ])."~".prenomCompInit($preaut)." ".nomCompEntier($entry->authLastName_s[$indQ])."~".substr(prenomCompInit($preaut), 0, -1)." ".nomCompEntier($entry->authLastName_s[$indQ])."~";
-									 $arriv .= "1900~";
-									 $moisactuel = date('n', time());
-									 if ($moisactuel >= 10) {$idepar = date('Y', time())+1;}else{$idepar = date('Y', time());}
-									 $depar .= $idepar."~";
-									 break;
+					 if (isset($entry->authIdHasPrimaryStructure_fs)) {
+						 foreach($entry->authIdHasPrimaryStructure_fs as $auth){
+							 $tabAuth = explode("_FacetSep_", $auth);
+							 if (strpos($tabAuth[1], $Id) !== false) {//Auteur de la collection
+								 $tabQ = explode("_JoinSep_", $tabAuth[1]);
+								 $indQ = 0;
+								 foreach($entry->authFullName_s as $funa){
+									 //if ($funa == $tabQ[0] && strpos($listenominit, $entry->authFirstName_s[$indQ]) === false) {
+									 if ($funa == $tabQ[0] && strpos($listenominit, nomCompEntier($entry->authLastName_s[$indQ])." ".$entry->authFirstName_s[$indQ]) === false) {
+										 $prenom = prenomCompInit($entry->authFirstName_s[$indQ]);
+										 //$listenominit .= nomCompEntier($entry->authLastName_s[$indQ])." ".$prenom.".~";
+										 //$listenominit2 .= $prenom." ".nomCompEntier($entry->authLastName_s[$indQ])."~";
+										 $preaut = $entry->authFirstName_s[$indQ];
+										 $listenominit .= nomCompEntier($entry->authLastName_s[$indQ])." ".$preaut."~".nomCompEntier($entry->authLastName_s[$indQ])." ".prenomCompInit($preaut)."~".nomCompEntier($entry->authLastName_s[$indQ])." ".substr(prenomCompInit($preaut), 0, -1)."~";
+										 $listenominit2 .= $preaut." ".nomCompEntier($entry->authLastName_s[$indQ])."~".prenomCompInit($preaut)." ".nomCompEntier($entry->authLastName_s[$indQ])."~".substr(prenomCompInit($preaut), 0, -1)." ".nomCompEntier($entry->authLastName_s[$indQ])."~";
+										 $arriv .= "1900~";
+										 $moisactuel = date('n', time());
+										 if ($moisactuel >= 10) {$idepar = date('Y', time())+1;}else{$idepar = date('Y', time());}
+										 $depar .= $idepar."~";
+										 break;
+									 }
+									 $indQ++;
 								 }
-								 $indQ++;
 							 }
 						 }
 					 }
