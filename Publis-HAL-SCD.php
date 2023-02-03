@@ -1654,7 +1654,7 @@ while (isset($labosur[$ii])) {
     if(isset($pubmed[$i])) {$pubmedinit[$i] = $pubmed[$i]; $pubmed[$i] = "Pubmed : <a target='_blank' href='http://www.ncbi.nlm.nih.gov/pubmed/".$pubmed[$i]."'>".$pubmed[$i]."</a>".$presbib;}
     if(isset($pdf1[$i])) {
       if(strpos($pdf1[$i], "http") !== false) {
-          $pdf1[$i] = str_replace(array("http://","https://","http//","https//"), "", $pdf1[$i]);
+          $pdf1[$i] = str_replace(array("http://","https://","http//","https//"), "", trim($pdf1[$i]));
       }
       if (strpos($pdf1[$i], "inserm") === false) {
         $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='https://".$pdf1[$i]."'><img alt='".$form11."' src='https://halur1.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
