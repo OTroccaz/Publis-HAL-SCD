@@ -1466,6 +1466,7 @@ while (isset($labosur[$ii])) {
         $quoi = $resgen1->getAttribute("name");
         //if (strpos("label_bibtex",$quoi) !== false) {$label_bibtex[$i] = $resgen1->nodeValue;}
         if (strpos("uri_s",$quoi) !== false) {$uri[$i] = $resgen1->nodeValue;}
+				$pdf1[$i] = '';
         if (strpos("fileMain_s",$quoi) !== false) {$pdf1[$i] = $resgen1->nodeValue;}
         if (strpos("docType_s",$quoi) !== false) {$typdocxml[$i] = $resgen1->nodeValue;}
         if (strpos("label_s",$quoi) !== false) {$label[$i] = $resgen1->nodeValue;}
@@ -1533,7 +1534,7 @@ while (isset($labosur[$ii])) {
           $keywliste = substr($keywliste, 0, (strlen($keywliste)-2));
           $keyword[$i] = $keywliste;
         }
-        if (strpos("files_s",$quoi) !== false) {
+        if (strpos("files_s",$quoi) !== false && empty($pdf1[$i])) {
           $filesliste = "";
           $enfants = $resgen2->childNodes;
           foreach($enfants as $enfant) {
@@ -1652,7 +1653,7 @@ while (isset($labosur[$ii])) {
     }
     if(isset($doi[$i])) {$doinit[$i] = $doi[$i]; $doi[$i] = "DOI : <a target='_blank' href='https://doi.org/".$doi[$i]."'>https://doi.org/".$doi[$i]."</a>".$presbib;}
     if(isset($pubmed[$i])) {$pubmedinit[$i] = $pubmed[$i]; $pubmed[$i] = "Pubmed : <a target='_blank' href='http://www.ncbi.nlm.nih.gov/pubmed/".$pubmed[$i]."'>".$pubmed[$i]."</a>".$presbib;}
-    if(isset($pdf1[$i])) {
+    if(isset($pdf1[$i]) && !empty($pdf1[$i])) {
       if(strpos($pdf1[$i], "http") !== false) {
           $pdf1[$i] = str_replace(array("http://","https://","http//","https//"), "", trim($pdf1[$i]));
       }
