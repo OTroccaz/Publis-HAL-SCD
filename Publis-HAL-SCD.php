@@ -1657,10 +1657,11 @@ while (isset($labosur[$ii])) {
       if(strpos($pdf1[$i], "http") !== false) {
           $pdf1[$i] = str_replace(array("http://","https://","http//","https//"), "", trim($pdf1[$i]));
       }
+			$urlpdf = str_replace('/document', '', $pdf1[$i]);
       if (strpos($pdf1[$i], "inserm") === false) {
-        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='https://".$pdf1[$i]."'><img alt='".$form11."' src='https://halur1.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
+        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='https://".$urlpdf."'><img alt='".$form11."' src='https://halur1.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
       }else{
-        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='http://".$pdf1[$i]."'><img alt='".$form11."' src='https://halur1.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
+        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='http://".$urlpdf."'><img alt='".$form11."' src='https://halur1.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
       }
     }
     if (isset($typdocxml[$i])) {
