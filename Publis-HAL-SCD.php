@@ -365,7 +365,8 @@ if ($lang == "fr") {//français
                 "17" => "Articles avec comité de lecture de revues internationales",
                 "18" => "Articles avec comité de lecture de revues nationales",
                 "19" => "Articles sans comité de lecture de revues internationales",
-                "20" => "Articles sans comité de lecture de revues nationales");
+                "20" => "Articles sans comité de lecture de revues nationales",
+								"21" => "N° spécial de revue");
   $form1 = "Tri par année : de ";
   $form2 = " à ";
   $form3 = "Nombre de publications par page : " ;
@@ -417,7 +418,8 @@ if ($lang == "fr") {//français
                 "17" => "International refereed journal articles",
                 "18" => "National refereed journal articles",
                 "19" => "International non-refereed journal articles",
-                "20" => "National non-refereed journal articles");
+                "20" => "National non-refereed journal articles",
+								"21" => "Special issue");
   $form1 = "Years: from ";
   $form2 = " to ";
   $form3 = "Number of publications per page: ";
@@ -878,6 +880,8 @@ if ($typform == $form9s) {//formulaire de recherche complet
   $text .= "<option value='OUV'".$txt.">".$typdocHAL['9']."</option>\r\n";
   if($typdoc == "DOUV") {$txt = " selected";}else{$txt = "";}
   $text .= "<option value='DOUV'".$txt.">".$typdocHAL['10']."</option>\r\n";
+	if($typdoc == "ISSUE") {$txt = " selected";}else{$txt = "";}
+  $text .= "<option value='ISSUE'".$txt.">".$typdocHAL['21']."</option>\r\n";
   if($typdoc == "MEM") {$txt = " selected";}else{$txt = "";}
   $text .= "<option value='MEM'".$txt.">".$typdocHAL['11']."</option>\r\n";
   if($typdoc == "HDR") {$txt = " selected";}else{$txt = "";}
@@ -1693,6 +1697,7 @@ while (isset($labosur[$ii])) {
       if ($typdocxml[$i] == "IMG") {$typdoctab[$i] = $typdocHAL[8];}
       if ($typdocxml[$i] == "OUV") {$typdoctab[$i] = $typdocHAL[9];}
       if ($typdocxml[$i] == "DOUV") {$typdoctab[$i] = $typdocHAL[10];}
+			if ($typdocxml[$i] == "ISSUE") {$typdoctab[$i] = $typdocHAL[21];}
       if ($typdocxml[$i] == "MEM") {$typdoctab[$i] = $typdocHAL[11];}
       if ($typdocxml[$i] == "HDR") {$typdoctab[$i] = $typdocHAL[12];}
       if ($typdocxml[$i] == "PATENT") {$typdoctab[$i] = $typdocHAL[13];}
