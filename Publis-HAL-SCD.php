@@ -1417,8 +1417,8 @@ while (isset($labosur[$ii])) {
 										 //$listenominit .= nomCompEntier($entry->authLastName_s[$indQ])." ".$prenom.".~";
 										 //$listenominit2 .= $prenom." ".nomCompEntier($entry->authLastName_s[$indQ])."~";
 										 $preaut = $entry->authFirstName_s[$indQ];
-										 $listenominit .= nomCompEntier($entry->authLastName_s[$indQ])." ".$preaut."~".nomCompEntier($entry->authLastName_s[$indQ])." ".prenomCompInit($preaut)."~".nomCompEntier($entry->authLastName_s[$indQ])." ".substr(prenomCompInit($preaut), 0, -1)."~";
-										 $listenominit2 .= $preaut." ".nomCompEntier($entry->authLastName_s[$indQ])."~".prenomCompInit($preaut)." ".nomCompEntier($entry->authLastName_s[$indQ])."~".substr(prenomCompInit($preaut), 0, -1)." ".nomCompEntier($entry->authLastName_s[$indQ])."~";
+										 $listenominit .= nomCompEntier($entry->authLastName_s[$indQ])." ".$preaut."~".nomCompEntier($entry->authLastName_s[$indQ])." ".prenomCompInit($preaut)."~".nomCompEntier($entry->authLastName_s[$indQ])." ".substr(prenomCompInit($preaut), 0, -1)."~".$entry->authFullName_s[$indQ]."~";
+										 $listenominit2 .= $preaut." ".nomCompEntier($entry->authLastName_s[$indQ])."~".prenomCompInit($preaut)." ".nomCompEntier($entry->authLastName_s[$indQ])."~".substr(prenomCompInit($preaut), 0, -1)." ".nomCompEntier($entry->authLastName_s[$indQ])."~".$entry->authFullName_s[$indQ]."~";
 										 $arriv .= "1900~";
 										 $moisactuel = date('n', time());
 										 if ($moisactuel >= 10) {$idepar = date('Y', time())+1;}else{$idepar = date('Y', time());}
