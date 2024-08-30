@@ -988,7 +988,7 @@ if (((isset($_GET['autvar']) && $_GET['autvar'] != "") || (isset($_GET['aut']) &
 $labo2 = $labocrit;
 
 if ($form != "aucun" && $typform != $form9p) {
-  $text .= $consult1."<a target='_blank' href='http://hal-univ-rennes1.archives-ouvertes.fr/".$labo2."/' class='noicon'>".$consult2."</a>.<br>\r\n";
+  $text .= $consult1."<a target='_blank' href='https://univ-rennes.hal.science/".$labo2."/' class='noicon'>".$consult2."</a>.<br>\r\n";
 }
 
 if ($halid == "" && $typform != $form9p) {
