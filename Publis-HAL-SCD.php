@@ -366,7 +366,8 @@ if ($lang == "fr") {//français
                 "18" => "Articles avec comité de lecture de revues nationales",
                 "19" => "Articles sans comité de lecture de revues internationales",
                 "20" => "Articles sans comité de lecture de revues nationales",
-								"21" => "N° spécial de revue");
+				"21" => "N° spécial de revue",
+				"22" => "Logiciels");
   $form1 = "Tri par année : de ";
   $form2 = " à ";
   $form3 = "Nombre de publications par page : " ;
@@ -419,7 +420,8 @@ if ($lang == "fr") {//français
                 "18" => "National refereed journal articles",
                 "19" => "International non-refereed journal articles",
                 "20" => "National non-refereed journal articles",
-								"21" => "Special issue");
+				"21" => "N° spécial de revue",
+				"22" => "Softwares");
   $form1 = "Years: from ";
   $form2 = " to ";
   $form3 = "Number of publications per page: ";
@@ -719,6 +721,7 @@ $pdf3 = array();
 $pdf4 = array();
 $pdf5 = array();
 $reprint = array();
+$citfull = array();
 $indtab = array();
 
 //recherche jusqu'à quelle année il y a des publications > routine trop longue !!! > d'où $nbanneesfc ...
@@ -894,6 +897,8 @@ if ($typform == $form9s) {//formulaire de recherche complet
   $text .= "<option value='LECTURE'".$txt.">".$typdocHAL['15']."</option>\r\n";
   if($typdoc == "PRESCONF") {$txt = " selected";}else{$txt = "";}
   $text .= "<option value='PRESCONF'".$txt.">".$typdocHAL['16']."</option>\r\n";
+  if($typdoc == "SOFTWARE") {$txt = " selected";}else{$txt = "";}
+  $text .= "<option value='SOFTWARE'".$txt.">".$typdocHAL['22']."</option>\r\n";
   $text .= "</select><br>\r\n";
   $text .= "</div>";
   //présentation bibliographique
@@ -1350,7 +1355,7 @@ while (isset($labosur[$ii])) {
     }
   }
 
-	$URL .= '&fl=title_s,subTitle_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_s,authFullName_t,bookTitle_s,conferenceTitle_s,fileMain_s,files_s,halId_s,label_bibtex,volume_s,issue_s,page_s,journalPublisher_s,scientificEditor_s,pubmedId_s,audience_s,peerReviewing_s,authIdHalFullName_fs,authFirstName_s,language_s,authLastName_s,authIdHasPrimaryStructure_fs&sort=auth_sort asc';
+	$URL .= '&fl=title_s,subTitle_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_s,authFullName_t,bookTitle_s,conferenceTitle_s,fileMain_s,files_s,halId_s,label_bibtex,volume_s,issue_s,page_s,journalPublisher_s,scientificEditor_s,pubmedId_s,audience_s,peerReviewing_s,authIdHalFullName_fs,authFirstName_s,language_s,authLastName_s,citationFull_s,authIdHasPrimaryStructure_fs&sort=auth_sort asc';
   $URL = str_replace(" ", "%20", $URL);
   //echo ("toto : ".$URL);
 
@@ -1490,6 +1495,7 @@ while (isset($labosur[$ii])) {
         if (strpos("scientificEditor_s",$quoi) !== false) {$scientificEditor[$i] = $resgen1->nodeValue;}
         if (strpos("audience_s",$quoi) !== false) {$audience[$i] = $resgen1->nodeValue;}
         if (strpos("peerReviewing_s",$quoi) !== false) {$peerrev[$i] = $resgen1->nodeValue;}
+		if (strpos("citationFull_s",$quoi) !== false) {$citfull[$i] = $resgen1->nodeValue;}
       }
     }
     $res2 = $resgen0->getElementsByTagName('arr');
@@ -1697,13 +1703,14 @@ while (isset($labosur[$ii])) {
       if ($typdocxml[$i] == "IMG") {$typdoctab[$i] = $typdocHAL[8];}
       if ($typdocxml[$i] == "OUV") {$typdoctab[$i] = $typdocHAL[9];}
       if ($typdocxml[$i] == "DOUV") {$typdoctab[$i] = $typdocHAL[10];}
-			if ($typdocxml[$i] == "ISSUE") {$typdoctab[$i] = $typdocHAL[21];}
+      if ($typdocxml[$i] == "ISSUE") {$typdoctab[$i] = $typdocHAL[21];}
       if ($typdocxml[$i] == "MEM") {$typdoctab[$i] = $typdocHAL[11];}
       if ($typdocxml[$i] == "HDR") {$typdoctab[$i] = $typdocHAL[12];}
       if ($typdocxml[$i] == "PATENT") {$typdoctab[$i] = $typdocHAL[13];}
       if ($typdocxml[$i] == "POSTER") {$typdoctab[$i] = $typdocHAL[14];}
       if ($typdocxml[$i] == "LECTURE") {$typdoctab[$i] = $typdocHAL[15];}
       if ($typdocxml[$i] == "PRESCONF") {$typdoctab[$i] = $typdocHAL[16];}
+	  if ($typdocxml[$i] == "SOFTWARE") {$typdoctab[$i] = $typdocHAL[22];}
     }
     $test = $label[$i];
     $test = str_replace("..", ".", $test);
@@ -1802,6 +1809,7 @@ for ($i = 1; $i <= $imax; $i++) {
     if (!isset(${"pdf".$j}[$i])) {${"pdf".$j}[$i] = "-";}
   }
   if ($reprint[$i] == "") {$reprint[$i] = "-";}
+  if ($citfull[$i] == "") {$citfull[$i] = "-";}
 }
 //var_dump($auteurs);
 //tri des tableaux selon leurs clés => réindexation ordonnée
@@ -1829,21 +1837,22 @@ if (!empty($subtitle)) {
   ksort($pdf4);
   ksort($pdf5);
   ksort($reprint);
+  ksort($citfull);
   //ksort($indtab);
 
   //array_multisort($typdoctab, $premautab, $auteurs, $titrehref, $rvnp, $doi, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $indtab);
   //if (strpos($css, "ipr") !== false) {
   if ($typform == "sfvi") {
 		if (isset($_GET['typord']) && ($_GET['typord'] == "asc")) {
-			array_multisort($typdoctab, $prodate, SORT_ASC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
+			array_multisort($typdoctab, $prodate, SORT_ASC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
 		}else{
-			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
+			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
 		}
   }else{
 		if ($anneedeb != $anneefin) {//Si recherche sur différentes années, classer par années décroissantes, puis par auteurs
-			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
+			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
 		}else{
-			array_multisort($typdoctab, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $prodate, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint);
+			array_multisort($typdoctab, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $prodate, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
 		}
   }
 }
@@ -2076,7 +2085,9 @@ for ($k = $ideb; $k <= $ifin; $k++) {
     $titreaff = str_replace(array($titre, ucfirst($titre), strtoupper($titre), strtolower($titre)),array($titreaff1, $titreaff2, $titreaff3, $titreaff4),$titrehref[$i]);
     $rvnp[$i] = str_replace(': . ', '', $rvnp[$i]);
     if (isset($_GET['presbib']) && ($_GET['presbib'] != "br")) {
-      //$textaff = "<dt class='ChampRes'>Indice</dt><dd class='ValeurRes Indice' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
+	  $textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Indice' style='float: left; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
+	  /*
+	  //$textaff = "<dt class='ChampRes'>Indice</dt><dd class='ValeurRes Indice' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
       //$textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Indice' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
       //$textaff .= "<dt class='ChampRes'>Auteurs</dt><dd class='ValeurRes Auteurs' style='display: inline; margin-left: 0%; font-size: 1em;'>".$autaff."</dd>";
       $textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Auteurs' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;".$autaff."</dd>";
@@ -2087,7 +2098,9 @@ for ($k = $ideb; $k <= $ifin; $k++) {
       if ($doi[$i] == "-") {$doiaff = "";}else{$doiaff = $doi[$i];}
       //$textaff .= "<dt class='ChampRes'>DOI</dt><dd class='ValeurRes DOI' style='display: inline; margin-left: 0%; font-size: 1em;'>".$doiaff."</dd>";
       $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes DOI' style='display: inline; margin-left: 0%; font-size: 1em;'>".$doiaff."</dd>";
-      if ($pubmed[$i] == "-") {$pubmedaff = "";}else{$pubmedaff = $pubmed[$i];}
+	  */
+	  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Citfull' style='font-size: 1em;'>".$citfull[$i]."</dd>";
+      if ($pubmed[$i] == "-") {$pubmedaff = "";}else{$pubmedaff = str_replace('&nbsp;-&nbsp;', '', $pubmed[$i]);}
       $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Pubmed' style='display: inline; margin-left: 0%; font-size: 1em;'>".$pubmedaff."</dd>";
       //$textaff .= "<dt class='ChampRes'>Accès au bibtex</dt><dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'>".$bibtex[$i]."</dd>";
       if ($bt == "oui") {
@@ -2100,14 +2113,17 @@ for ($k = $ideb; $k <= $ifin; $k++) {
       //$textaff = "<dt class='ChampRes'>Indice</dt><dd class='ValeurRes Indice' style='float: left; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
       $textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Indice' style='float: left; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
       //$textaff .= "<dt class='ChampRes'>Auteurs</dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$titreaff."</dd>";
+	  /*
       $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$titreaff."</dd>";
       //$textaff .= "<dt class='ChampRes'>Titre</dt><dd class='ValeurRes Auteurs' style='font-size: 1em;'>".$autaff."</dd>";
       $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Auteurs' style='font-size: 1em;'>".$autaff."</dd>";
       //$textaff .= "<dt class='ChampRes'>Détail</dt><dd class='ValeurRes Detail' style='font-size: 1em;'>".$rvnp[$i]."</dd>";
       $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Detail' style='font-size: 1em;'>".$rvnp[$i]."</dd>";
-      if ($doi[$i] == "-") {$doiaff = "";}else{$doiaff = $doi[$i];}
+	  if ($doi[$i] == "-") {$doiaff = "";}else{$doiaff = $doi[$i];}
       //$textaff .= "<dt class='ChampRes'>DOI</dt><dd class='ValeurRes DOI' style='font-size: 1em;'>".$doiaff."</dd>";
       $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes DOI' style='font-size: 1em;'>".$doiaff."</dd>";
+	  */
+	  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Citfull' style='font-size: 1em;'>".$citfull[$i]."</dd>";
       if ($pubmed[$i] == "-") {$pubmedaff = "";}else{$pubmedaff = $pubmed[$i];}
       $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Pubmed' style='font-size: 1em;'>".$pubmedaff."</dd>";
       //$textaff .= "<dt class='ChampRes'>Accès au bibtex</dt><dd class='ValeurRes' style='display: inline; font-size: 1em;'>".$bibtex[$i]."</dd>";
@@ -2279,6 +2295,7 @@ for ($k = $ideb; $k <= $ifin; $k++) {
       //$text .= "<dt class='ChampRes'>Reprint</dt><dd class='ValeurRes Reprint' style='display: inline; margin-left: 0%;'>".$reprint[$i]."</dd></dl>\r\n";
       $text .= "<dd class='ValeurRes Reprint' style='display: inline; margin-left: 0%;'>".$reprint[$i]."</dd></dl>\r\n";
     }
+	
     //export en CSV
     fwrite($inF,$chaine.chr(13).chr(10));
 
