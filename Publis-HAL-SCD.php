@@ -367,7 +367,8 @@ if ($lang == "fr") {//français
                 "19" => "Articles sans comité de lecture de revues internationales",
                 "20" => "Articles sans comité de lecture de revues nationales",
 				"21" => "N° spécial de revue",
-				"22" => "Logiciels");
+				"22" => "Logiciels",
+				"23" => "Working papers");
   $form1 = "Tri par année : de ";
   $form2 = " à ";
   $form3 = "Nombre de publications par page : " ;
@@ -421,7 +422,8 @@ if ($lang == "fr") {//français
                 "19" => "International non-refereed journal articles",
                 "20" => "National non-refereed journal articles",
 				"21" => "N° spécial de revue",
-				"22" => "Softwares");
+				"22" => "Softwares",
+				"23" => "Working papers");
   $form1 = "Years: from ";
   $form2 = " to ";
   $form3 = "Number of publications per page: ";
@@ -899,6 +901,8 @@ if ($typform == $form9s) {//formulaire de recherche complet
   $text .= "<option value='PRESCONF'".$txt.">".$typdocHAL['16']."</option>\r\n";
   if($typdoc == "SOFTWARE") {$txt = " selected";}else{$txt = "";}
   $text .= "<option value='SOFTWARE'".$txt.">".$typdocHAL['22']."</option>\r\n";
+  if($typdoc == "WORKINGPAPER") {$txt = " selected";}else{$txt = "";}
+  $text .= "<option value='WORKINGPAPER'".$txt.">".$typdocHAL['23']."</option>\r\n";
   $text .= "</select><br>\r\n";
   $text .= "</div>";
   //présentation bibliographique
@@ -1137,14 +1141,24 @@ while (isset($labosur[$ii])) {
 
   if ($typdocinit != "") {
     if (strpos($typdocinit, ",") === false) {
-      $URL .= ' AND docType_s:"'.$typdocinit.'"';
+      //Cas des Working papers > docSubType_s
+	  if ($typdocinit == 'WORKINGPAPER') {
+		$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+	  }else{
+		$URL .= ' AND docType_s:"'.$typdocinit.'"';
+	  }
     }else{
       $diffdoc = explode(",", $typdocinit);
       $idoc = 0;
       while (isset($diffdoc[$idoc])) {
         if ($idoc == 0) {$URL .= " AND (";}else{$URL .= " OR";}
         $typdoc = $diffdoc[$idoc];
-        $URL .= ' docType_s:"'.$typdoc.'"';
+		//Cas des Working papers > docSubType_s
+		if ($typdoc == 'WORKINGPAPER') {
+			$URL .= ' docSubType_s:"'.$typdoc.'"';
+		}else{
+			$URL .= ' docType_s:"'.$typdoc.'"';
+		}
         $idoc++;
       }
       $URL .= ')';
@@ -1170,14 +1184,24 @@ while (isset($labosur[$ii])) {
 
     if ($typdocinit != "") {
       if (strpos($typdocinit, ",") === false) {
-        $URL .= ' AND docType_s:"'.$typdocinit.'"';
+        //Cas des Working papers > docSubType_s
+		if ($typdocinit == 'WORKINGPAPER') {
+			$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+		}else{
+			$URL .= ' AND docType_s:"'.$typdocinit.'"';
+		}
       }else{
         $diffdoc = explode(",", $typdocinit);
         $idoc = 0;
         while (isset($diffdoc[$idoc])) {
           if ($idoc == 0) {$URL .= " AND (";}else{$URL .= " OR";}
           $typdoc = $diffdoc[$idoc];
-          $URL .= ' docType_s:"'.$typdoc.'"';
+		  //Cas des Working papers > docSubType_s
+          if ($typdoc == 'WORKINGPAPER') {
+			$URL .= ' docSubType_s:"'.$typdoc.'"';
+		  }else{
+			$URL .= ' docType_s:"'.$typdoc.'"';
+		  }
           $idoc++;
         }
         $URL .= ')';
@@ -1216,14 +1240,24 @@ while (isset($labosur[$ii])) {
 
     if ($typdocinit != "") {
       if (strpos($typdocinit, ",") === false) {
-        $URL .= ' AND docType_s:"'.$typdocinit.'"';
+        //Cas des Working papers > docSubType_s
+		if ($typdocinit == 'WORKINGPAPER') {
+			$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+		}else{
+			$URL .= ' AND docType_s:"'.$typdocinit.'"';
+		}
       }else{
         $diffdoc = explode(",", $typdocinit);
         $idoc = 0;
         while (isset($diffdoc[$idoc])) {
           if ($idoc == 0) {$URL .= " AND (";}else{$URL .= " OR";}
           $typdocinit = $diffdoc[$idoc];
-          $URL .= ' docType_s:"'.$typdocinit.'"';
+		  //Cas des Working papers > docSubType_s
+          if ($typdoc == 'WORKINGPAPER') {
+			$URL .= ' docSubType_s:"'.$typdocinit.'"';
+		  }else{
+			$URL .= ' docType_s:"'.$typdocinit.'"';
+		  }
           $idoc++;
         }
         $URL .= ')';
@@ -1262,14 +1296,23 @@ while (isset($labosur[$ii])) {
 
     if ($typdocinit != "") {
       if (strpos($typdocinit, ",") === false) {
-        $URL .= ' AND docType_s:"'.$typdocinit.'"';
+        if ($typdocinit == 'WORKINGPAPER') {
+			$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+		}else{
+			$URL .= ' AND docType_s:"'.$typdocinit.'"';
+		}
       }else{
         $diffdoc = explode(",", $typdocinit);
         $idoc = 0;
         while (isset($diffdoc[$idoc])) {
           if ($idoc == 0) {$URL .= " AND (";}else{$URL .= " OR";}
           $typdocinit = $diffdoc[$idoc];
-          $URL .= ' docType_s:"'.$typdocinit.'"';
+		  //Cas des Working papers > docSubType_s
+          if ($typdoc == 'WORKINGPAPER') {
+			$URL .= ' docSubType_s:"'.$typdocinit.'"';
+		  }else{
+			$URL .= ' docType_s:"'.$typdocinit.'"';
+		  }
           $idoc++;
         }
         $URL .= ')';
@@ -1308,14 +1351,24 @@ while (isset($labosur[$ii])) {
 
     if ($typdocinit != "") {
       if (strpos($typdocinit, ",") === false) {
-        $URL .= ' AND docType_s:"'.$typdocinit.'"';
+		//Cas des Working papers > docSubType_s
+		if ($typdocinit == 'WORKINGPAPER') {
+			$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+		}else{
+			$URL .= ' AND docType_s:"'.$typdocinit.'"';
+		}
       }else{
         $diffdoc = explode(",", $typdocinit);
         $idoc = 0;
         while (isset($diffdoc[$idoc])) {
           if ($idoc == 0) {$URL .= " AND (";}else{$URL .= " OR";}
           $typdocinit = $diffdoc[$idoc];
-          $URL .= ' docType_s:"'.$typdocinit.'"';
+		  //Cas des Working papers > docSubType_s
+          if ($typdoc == 'WORKINGPAPER') {
+			$URL .= ' docSubType_s:"'.$typdocinit.'"';
+		  }else{
+			$URL .= ' docType_s:"'.$typdocinit.'"';
+		  }
           $idoc++;
         }
         $URL .= ')';
@@ -1711,6 +1764,7 @@ while (isset($labosur[$ii])) {
       if ($typdocxml[$i] == "LECTURE") {$typdoctab[$i] = $typdocHAL[15];}
       if ($typdocxml[$i] == "PRESCONF") {$typdoctab[$i] = $typdocHAL[16];}
 	  if ($typdocxml[$i] == "SOFTWARE") {$typdoctab[$i] = $typdocHAL[22];}
+	  if ($typdocxml[$i] == "UNDEFINED" && $typdoc == "WORKINGPAPER") {$typdoctab[$i] = $typdocHAL[23];}
     }
     $test = $label[$i];
     $test = str_replace("..", ".", $test);
@@ -2099,7 +2153,7 @@ for ($k = $ideb; $k <= $ifin; $k++) {
       //$textaff .= "<dt class='ChampRes'>DOI</dt><dd class='ValeurRes DOI' style='display: inline; margin-left: 0%; font-size: 1em;'>".$doiaff."</dd>";
       $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes DOI' style='display: inline; margin-left: 0%; font-size: 1em;'>".$doiaff."</dd>";
 	  */
-	  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Citfull' style='font-size: 1em;'>".$citfull[$i]."</dd>";
+	  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$citfull[$i]."</dd>";
       if ($pubmed[$i] == "-") {$pubmedaff = "";}else{$pubmedaff = str_replace('&nbsp;-&nbsp;', '', $pubmed[$i]);}
       $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Pubmed' style='display: inline; margin-left: 0%; font-size: 1em;'>".$pubmedaff."</dd>";
       //$textaff .= "<dt class='ChampRes'>Accès au bibtex</dt><dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'>".$bibtex[$i]."</dd>";
@@ -2123,7 +2177,7 @@ for ($k = $ideb; $k <= $ifin; $k++) {
       //$textaff .= "<dt class='ChampRes'>DOI</dt><dd class='ValeurRes DOI' style='font-size: 1em;'>".$doiaff."</dd>";
       $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes DOI' style='font-size: 1em;'>".$doiaff."</dd>";
 	  */
-	  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Citfull' style='font-size: 1em;'>".$citfull[$i]."</dd>";
+	  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$citfull[$i]."</dd>";
       if ($pubmed[$i] == "-") {$pubmedaff = "";}else{$pubmedaff = $pubmed[$i];}
       $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Pubmed' style='font-size: 1em;'>".$pubmedaff."</dd>";
       //$textaff .= "<dt class='ChampRes'>Accès au bibtex</dt><dd class='ValeurRes' style='display: inline; font-size: 1em;'>".$bibtex[$i]."</dd>";
