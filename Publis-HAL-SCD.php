@@ -2084,7 +2084,7 @@ for ($k = $ideb; $k <= $ifin; $k++) {
 		$etal = (strpos($autaff, '<i> et al.</i>') !== false) ? 1 : 0;
 		if ($etal == 1) {$autaff = substr(str_replace('<i> et al.</i>', '', $autaff), 0, -5);}
 		$autfin = "";
-    if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "") || $listenominit2 != "") {
+	if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "") || $listenominit2 != "") {
       if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "")) {
         //$auteur_exp_aff = wd_remove_accents(ucwords($_GET['auteur_exp']));
         $auteur_exp_aff = ucwords($_GET['auteur_exp']);
@@ -2107,6 +2107,9 @@ for ($k = $ideb; $k <= $ifin; $k++) {
 					$autgd0 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autgd0);
 					$autaff = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autaff);
 					$autaff = mise_en_evidence(wd_remove_accents($autgd0), $autaff, "<b><u>", "</u></b>");
+					$citfull[$i] = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $citfull[$i]);
+					//$citfull[$i] = mise_en_evidence(wd_remove_accents($autgd0), $citfull[$i], "<b><u>", "</u></b>");
+					$citfull[$i] = str_replace($autexp0, "<b><u>".$autexp0."</u></b>", $citfull[$i]);
         }
         //$autexp0 = ucwords(strtolower($autexp0));
         //$autexp1 = "<b><u>".$autexp0."</u></b>";
@@ -2114,6 +2117,9 @@ for ($k = $ideb; $k <= $ifin; $k++) {
 				$autexp0 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autexp0);
 				$autaff = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autaff);
 				$autaff = mise_en_evidence(wd_remove_accents($autexp0), $autaff, "<b><u>", "</u></b>");
+				$citfull[$i] = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $citfull[$i]);
+				//$citfull[$i] = mise_en_evidence(wd_remove_accents($autexp0), $citfull[$i], "<b><u>", "</u></b>");
+				$citfull[$i] = str_replace($autexp0, "<b><u>".$autexp0."</u></b>", $citfull[$i]);
         $ii += 1;
       }
 			if ($etal == 1) {$autaff .= ' <i> et al.</i>';}
@@ -2136,6 +2142,9 @@ for ($k = $ideb; $k <= $ifin; $k++) {
     //corrections
 		$autaff = str_replace(array("<b><u><b><u>","</b></u></b></u>","troliesp",","), array("<b><u>","</b></u>"," ",", "), $autaff);
 		$autaff = str_replace(array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf"), array(".", "-", "'", " ", "(", ")"), $autaff);
+		$citfull[$i] = str_replace(array("<b><u><b><u>","</b></u></b></u>","troliesp",","), array("<b><u>","</b></u>"," ",", "), $citfull[$i]);
+		$citfull[$i] = str_replace(array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf"), array(".", "-", "'", " ", "(", ")"), $citfull[$i]);
+		
     $titreaff = str_replace(array($titre, ucfirst($titre), strtoupper($titre), strtolower($titre)),array($titreaff1, $titreaff2, $titreaff3, $titreaff4),$titrehref[$i]);
     $rvnp[$i] = str_replace(': . ', '', $rvnp[$i]);
     if (isset($_GET['presbib']) && ($_GET['presbib'] != "br")) {
