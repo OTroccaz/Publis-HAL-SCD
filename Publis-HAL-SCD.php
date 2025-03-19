@@ -521,8 +521,7 @@ if (date ('m') == 11 || date ('m') == 12) {
   curl_setopt($ch, CURLOPT_HEADER, 0);
   curl_setopt($ch, CURLOPT_TIMEOUT, 50); //timeout en secondes
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur1.univ-rennes1.fr)');
-  curl_setopt($ch, CURLOPT_USERAGENT, 'PROXY (http://siproxy.univ-rennes1.fr)');
+  curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur.univ-rennes.fr)');
   if (isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
@@ -549,12 +548,12 @@ if (date ('m') == 11 || date ('m') == 12) {
 if (isset($_GET['mailto']) && ($_GET['mailto'] != "")) {
   $mailto = htmlspecialchars($_GET['mailto']);
 }else{
-  $mailto = "toto.titi@univ-rennes1.fr";
+  $mailto = "toto.titi@univ-rennes.fr";
 }
 if (isset($_GET['css']) && ($_GET['css'] != "")) {
   $css = htmlspecialchars($_GET['css']);
 }else{
-  $css = "https://halur1.univ-rennes1.fr/HAL_SCD.css";
+  $css = "https://halur.univ-rennes.fr/HAL_SCD.css";
 }
 if (isset($_GET['bt']) && ($_GET['bt'] != "")) {
   $bt = htmlspecialchars($_GET['bt']);
@@ -675,7 +674,8 @@ if ($annee_publideb != "" || $anneedep != "") {
   }
 }else{
   if ($typform == $form9s || $typform == $form9p) {//formulaire complet ou vue intégrale sans formulaire
-    $anneedep = 1970;//année jusqu'où remonter dans le formulaire complet
+    //$anneedep = 1970;//année jusqu'où remonter dans le formulaire complet
+	$anneedep = date('Y', time()) - 2;
   }else{
     $nbanneesfs = 8;//nombre d'années à afficher dans le formulaire simplifié
   }
@@ -805,15 +805,20 @@ if (isset($_GET['aut'])) {$aut = mb_convert_case(htmlspecialchars($_GET['aut']),
 if (isset($_GET['titre'])) {$titre = mb_convert_case(htmlspecialchars($_GET['titre']),MB_CASE_LOWER,"UTF-8");}else{$titre = "";}
 //if (isset($_GET['typdoc']) && ($_GET['typdoc'] != "") && ($typform == $form9s)) {$typdocinit = htmlspecialchars($_GET['typdoc']); $typdoc = "('".$_GET['typdoc']."')";}else{$typdocinit = ""; $typdoc = "";}
 if (isset($_GET['typdoc']) && ($_GET['typdoc'] != "")) {$typdocinit = htmlspecialchars($_GET['typdoc']); $typdoc = htmlspecialchars($_GET['typdoc']);}else{$typdocinit = ""; $typdoc = "";}
-if (isset($_GET['anneedeb'])) {$anneedeb = htmlspecialchars($_GET['anneedeb']);}else{$anneedeb = $anneen;$anneefin = $anneen;}
+if (isset($_GET['anneedeb'])) {$anneedeb = htmlspecialchars($_GET['anneedeb']);}else{$anneedeb = $anneen; $anneefin = $anneen;}
 if (isset($_GET['anneefin'])) {$anneefin = htmlspecialchars($_GET['anneefin']);}else{if (isset($_GET['anneedeb'])) {$anneefin = htmlspecialchars($_GET['anneedeb']);}else{$anneefin = $anneedeb;}}
+
+//Si pas de recherche sur un auteur, i.e. pas pour alimenter une page perso, forcer anneedeb à anneefin - 2
+if (empty($auteur_exp) && $anneedeb != $anneefin) {$anneedeb = $anneefin - 2;}
 // vérification sur ordre des années si différentes
 if ($anneefin < $anneedeb) {$anneetemp = $anneedeb; $anneedeb = $anneefin; $anneefin = $anneetemp;}
 //$text = "<div id='res_script'><div style='text-align: center;'><h2><b>".$labo." - Publications</b></h2></div><br>\r\n";
 $text = "<br>";
 if ($typform == $form9p) {//sans formulaire et vue intégrale
   if (isset($_GET['anneedeb'])) {$anneedeb = htmlspecialchars($_GET['anneedeb']);}else{$anneedeb = "1970";}
-  if (isset($_GET['anneefin'])) {$anneefin = htmlspecialchars($_GET['anneefin']);}else{$anneefin = $anneefin = $anneen;}
+  //if (isset($_GET['anneedeb'])) {$anneedeb = htmlspecialchars($_GET['anneedeb']);}else{$anneedeb = $anneen - 2;}
+  if (empty($auteur_exp)) {$anneedeb = $anneefin - 2;}
+  if (isset($_GET['anneefin'])) {$anneefin = htmlspecialchars($_GET['anneefin']);}else{$anneefin = $anneen;}
 	if (isset($_GET['mef']) && $_GET['mef'] != 1) {
     if (isset($_GET['ensref']) && $_GET['ensref'] == "oui") {
       echo ("<p class='etendueAnnees'><h3>".$result8."</h3></p>");
@@ -1099,6 +1104,7 @@ while (isset($labosur[$ii])) {
 	if (!empty($autvar)) {
 		$anneedeb = 1970;
 		$anneefin = date('Y', time());
+		if (empty($auteur_exp)) {$anneedeb = $anneefin - 2;}
 		$collection_exp = "";
 		if (!empty($_GET["collection_exp"])) {
 			$collection_exp = $_GET["collection_exp"];
@@ -1421,8 +1427,7 @@ while (isset($labosur[$ii])) {
   curl_setopt($ch, CURLOPT_HEADER, 0);
   curl_setopt($ch, CURLOPT_TIMEOUT, 50); //timeout en secondes
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur1.univ-rennes1.fr)');
-  curl_setopt($ch, CURLOPT_USERAGENT, 'PROXY (http://siproxy.univ-rennes1.fr)');
+  curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur.univ-rennes.fr)');
 	if (isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 		curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
@@ -1504,8 +1509,7 @@ while (isset($labosur[$ii])) {
     curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_TIMEOUT, 50); //timeout en secondes
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur1.univ-rennes1.fr)');
-    curl_setopt($ch, CURLOPT_USERAGENT, 'PROXY (http://siproxy.univ-rennes1.fr)');
+    curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur.univ-rennes.fr)');
     if (isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 		curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
@@ -1725,9 +1729,9 @@ while (isset($labosur[$ii])) {
       }
 			$urlpdf = str_replace('/document', '', $pdf1[$i]);
       if (strpos($pdf1[$i], "inserm") === false) {
-        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='https://".$urlpdf."'><img alt='".$form11."' src='https://halur1.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
+        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='https://".$urlpdf."'><img alt='".$form11."' src='https://halur.univ-rennes.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
       }else{
-        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='http://".$urlpdf."'><img alt='".$form11."' src='https://halur1.univ-rennes1.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
+        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='http://".$urlpdf."'><img alt='".$form11."' src='https://halur.univ-rennes.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
       }
     }
     if (isset($typdocxml[$i])) {
@@ -1781,7 +1785,7 @@ while (isset($labosur[$ii])) {
       $url = str_replace(array("http://", "https://"), "",$uri[$i]);
       $pos = strpos($url, "/")+1;
       $url = substr($url, $pos, (strlen($url)-$pos));
-      $bibtex[$i] = "<a target='_blank' href='https://halur1.univ-rennes1.fr/Publis-HAL-SCD-bibtex.php?id=".$url."'><img alt='".$form10."' src='https://halur1.univ-rennes1.fr/BIB_icon.gif' style='height: 13px; border:0;' title='BibTex' /></a> ";
+      $bibtex[$i] = "<a target='_blank' href='https://halur.univ-rennes.fr/Publis-HAL-SCD-bibtex.php?id=".$url."'><img alt='".$form10."' src='https://halur.univ-rennes.fr/BIB_icon.gif' style='height: 13px; border:0;' title='BibTex' /></a> ";
       $test = str_replace("&lt;".$url."&gt;", "", $test);
       $test = str_replace(", et al. ", "", $test);
       $test = str_replace(". .", ".", $test);
@@ -1806,7 +1810,7 @@ while (isset($labosur[$ii])) {
       $repr .= "%20-%20";
       $repr .= str_replace(array("'", " ", "[", "]"), array("’", "%20", "%5B", "%5D"), strip_tags($rvnp[$i]));
       $repr .= "%20Many%20thanks%20for%20considering%20my%20request.";
-      $repr .= "'><img style='border:0;' src='https://halur1.univ-rennes1.fr/ReprintRequest.jpg' alt='Reprint request: Subject to availability' title='Reprint request: Subject to availability'></a>";
+      $repr .= "'><img style='border:0;' src='https://halur.univ-rennes.fr/ReprintRequest.jpg' alt='Reprint request: Subject to availability' title='Reprint request: Subject to availability'></a>";
       $repr .= "<br>";
     }else{
       $repr = "&nbsp;";
@@ -2023,353 +2027,355 @@ if (isset($_GET['typord']) && ($_GET['typord'] == "asc" || $_GET['typord'] == "d
 $rubr = "";
 for ($k = $ideb; $k <= $ifin; $k++) {
   $ok = "non";
-  $i = $indtab[$k];
-  if (($titre != "") && ($aut != "")) {//si recherche sur un mot du titre et un auteur
-    if ((stripos($titrehref[$i], $titre) !== false) && (stripos($auteursinit[$i], $aut) !== false)){$ok = "oui";}
-  }
-  if (($titre != "") && ($aut == "")) {//si recherche sur un mot du titre
-    if (stripos($titrehref[$i], $titre) !== false){$ok = "oui";}
-  }
-  if (($titre == "") && ($aut != "")) {//si recherche sur un auteur
-    if (stripos($auteursinit[$i], $aut) !== false){$ok = "oui";}
-  }
-  if (($titre == "") && ($aut == "")) {//aucune recherche sur un titre ou un auteur
-    $ok = "oui";
-  }
-  if ($ok == "oui") { //si la référence est retenue, on continue la routine
-    if ($rubr == "") {
-      $rubr = $typdoctab[$i];
-      if ($halid == "") {
-        $text .= "<p class='SousRubrique'><b>".$typdoctab[$i]."</b></p>\r\n";
-      }
-    }
-    if ($rubr != $typdoctab[$i]) {
-      if ($halid == "") {
-        $text .= "<p class='SousRubrique'><b>".$typdoctab[$i]."</b></p>\r\n";
-      }
-      $rubr = $typdoctab[$i];
-    }
-    //mise en évidence des recherches
-    $titreaff1 = "<b><u>".$titre."</u></b>";
-    $titreaff2 = "<b><u>".ucwords($titre)."</u></b>";
-    $titreaff3 = "<b><u>".strtoupper($titre)."</u></b>";
-    $titreaff4 = "<b><u>".strtolower($titre)."</u></b>";
-    //$autaff1 = "<b><u>".$aut."</u></b>";
-		$autaff1 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $aut);
-		$autaff1 = mise_en_evidence(wd_remove_accents($autaff1), $autaff1, "<b><u>", "</u></b>");
-    //$autaff2 = "<b><u>".prenomCompEntier($aut)."</u></b>";
-		$autaff2 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , prenomCompEntier($aut));
-		$autaff2 = mise_en_evidence(wd_remove_accents($autaff2), $autaff2, "<b><u>", "</u></b>");
-    //$autaff3 = "<b><u>".strtoupper($aut)."</u></b>";
-		$autaff3 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , strtoupper($aut));
-		$autaff3 = mise_en_evidence(wd_remove_accents($autaff3), $autaff3, "<b><u>", "</u></b>");
-    //$autaff4 = "<b><u>".strtolower($aut)."</u></b>";
-		$autaff4 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , strtolower($aut));
-		$autaff4 = mise_en_evidence(wd_remove_accents($autaff4), $autaff4, "<b><u>", "</u></b>");
-	
-    //si nom composé
-    $postiret = strpos($aut,"-");
-    $autg = "";
-    $autd = "";
-    $autgd = "";
-    $autaff5 = "";
-    if ($postiret != 0) {
-      $autg = substr($aut,0,($postiret));
-      $autd = substr($aut,($postiret+1),(strlen($aut)-$postiret));
-      $autgd = ucfirst($autg)."-".ucfirst($autd);
-      //$autaff5 = "<b><u>".$autgd."</u></b>";
-			$autaff5 = mise_en_evidence(wd_remove_accents(str_replace(" ", "troliesp", $autgd)), str_replace(" ", "troliesp", $autgd), "<b><u>", "</u></b>");
-    }
-    //si recherche sur plusieurs auteurs
-    $autaff = $auteurs[$i];
-		$autaff = str_replace(", ", ",", $autaff);
-		//Présence de <i> et al.</i> ? > Si oui, supprimer temporairement pour conserver la mise en évidence du dernier auteur
-		$etal = (strpos($autaff, '<i> et al.</i>') !== false) ? 1 : 0;
-		if ($etal == 1) {$autaff = substr(str_replace('<i> et al.</i>', '', $autaff), 0, -5);}
-		$autfin = "";
-	if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "") || $listenominit2 != "") {
-      if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "")) {
-        //$auteur_exp_aff = wd_remove_accents(ucwords($_GET['auteur_exp']));
-        $auteur_exp_aff = ucwords($_GET['auteur_exp']);
-        $auteur_exp_aff_tab = explode(",", $auteur_exp_aff);
-        $ii = 0;
-      }else{
-        $auteur_exp_aff_tab = explode("~", $listenominit2);
-        $ii = 1;
-      }
-      while (isset($auteur_exp_aff_tab[$ii]) && $auteur_exp_aff_tab[$ii] != "") {
-        $autexp0 = str_replace(","," ",$auteur_exp_aff_tab[$ii]);
-        //si nom composé
-        $postiret = strpos($autexp0,"-");
-        if ($postiret != 0) {
-          $autg = substr($autexp0,0,($postiret));
-          $autd = substr($autexp0,($postiret+1),(strlen($autexp0)-$postiret));
-          $autgd0 = ucfirst($autg)."-".ucfirst($autd);
-          //$autgd1 = "<b><u>".$autgd0."</u></b>";
-					//$autaff = str_replace($autgd0, $autgd1, $autaff);
-					$autgd0 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autgd0);
+  if (isset($indtab[$k])) {
+	  $i = $indtab[$k];
+	  if (($titre != "") && ($aut != "")) {//si recherche sur un mot du titre et un auteur
+		if ((stripos($titrehref[$i], $titre) !== false) && (stripos($auteursinit[$i], $aut) !== false)){$ok = "oui";}
+	  }
+	  if (($titre != "") && ($aut == "")) {//si recherche sur un mot du titre
+		if (stripos($titrehref[$i], $titre) !== false){$ok = "oui";}
+	  }
+	  if (($titre == "") && ($aut != "")) {//si recherche sur un auteur
+		if (stripos($auteursinit[$i], $aut) !== false){$ok = "oui";}
+	  }
+	  if (($titre == "") && ($aut == "")) {//aucune recherche sur un titre ou un auteur
+		$ok = "oui";
+	  }
+	  if ($ok == "oui") { //si la référence est retenue, on continue la routine
+		if ($rubr == "") {
+		  $rubr = $typdoctab[$i];
+		  if ($halid == "") {
+			$text .= "<p class='SousRubrique'><b>".$typdoctab[$i]."</b></p>\r\n";
+		  }
+		}
+		if ($rubr != $typdoctab[$i]) {
+		  if ($halid == "") {
+			$text .= "<p class='SousRubrique'><b>".$typdoctab[$i]."</b></p>\r\n";
+		  }
+		  $rubr = $typdoctab[$i];
+		}
+		//mise en évidence des recherches
+		$titreaff1 = "<b><u>".$titre."</u></b>";
+		$titreaff2 = "<b><u>".ucwords($titre)."</u></b>";
+		$titreaff3 = "<b><u>".strtoupper($titre)."</u></b>";
+		$titreaff4 = "<b><u>".strtolower($titre)."</u></b>";
+		//$autaff1 = "<b><u>".$aut."</u></b>";
+			$autaff1 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $aut);
+			$autaff1 = mise_en_evidence(wd_remove_accents($autaff1), $autaff1, "<b><u>", "</u></b>");
+		//$autaff2 = "<b><u>".prenomCompEntier($aut)."</u></b>";
+			$autaff2 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , prenomCompEntier($aut));
+			$autaff2 = mise_en_evidence(wd_remove_accents($autaff2), $autaff2, "<b><u>", "</u></b>");
+		//$autaff3 = "<b><u>".strtoupper($aut)."</u></b>";
+			$autaff3 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , strtoupper($aut));
+			$autaff3 = mise_en_evidence(wd_remove_accents($autaff3), $autaff3, "<b><u>", "</u></b>");
+		//$autaff4 = "<b><u>".strtolower($aut)."</u></b>";
+			$autaff4 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , strtolower($aut));
+			$autaff4 = mise_en_evidence(wd_remove_accents($autaff4), $autaff4, "<b><u>", "</u></b>");
+		
+		//si nom composé
+		$postiret = strpos($aut,"-");
+		$autg = "";
+		$autd = "";
+		$autgd = "";
+		$autaff5 = "";
+		if ($postiret != 0) {
+		  $autg = substr($aut,0,($postiret));
+		  $autd = substr($aut,($postiret+1),(strlen($aut)-$postiret));
+		  $autgd = ucfirst($autg)."-".ucfirst($autd);
+		  //$autaff5 = "<b><u>".$autgd."</u></b>";
+				$autaff5 = mise_en_evidence(wd_remove_accents(str_replace(" ", "troliesp", $autgd)), str_replace(" ", "troliesp", $autgd), "<b><u>", "</u></b>");
+		}
+		//si recherche sur plusieurs auteurs
+		$autaff = $auteurs[$i];
+			$autaff = str_replace(", ", ",", $autaff);
+			//Présence de <i> et al.</i> ? > Si oui, supprimer temporairement pour conserver la mise en évidence du dernier auteur
+			$etal = (strpos($autaff, '<i> et al.</i>') !== false) ? 1 : 0;
+			if ($etal == 1) {$autaff = substr(str_replace('<i> et al.</i>', '', $autaff), 0, -5);}
+			$autfin = "";
+		if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "") || $listenominit2 != "") {
+		  if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "")) {
+			//$auteur_exp_aff = wd_remove_accents(ucwords($_GET['auteur_exp']));
+			$auteur_exp_aff = ucwords($_GET['auteur_exp']);
+			$auteur_exp_aff_tab = explode(",", $auteur_exp_aff);
+			$ii = 0;
+		  }else{
+			$auteur_exp_aff_tab = explode("~", $listenominit2);
+			$ii = 1;
+		  }
+		  while (isset($auteur_exp_aff_tab[$ii]) && $auteur_exp_aff_tab[$ii] != "") {
+			$autexp0 = str_replace(","," ",$auteur_exp_aff_tab[$ii]);
+			//si nom composé
+			$postiret = strpos($autexp0,"-");
+			if ($postiret != 0) {
+			  $autg = substr($autexp0,0,($postiret));
+			  $autd = substr($autexp0,($postiret+1),(strlen($autexp0)-$postiret));
+			  $autgd0 = ucfirst($autg)."-".ucfirst($autd);
+			  //$autgd1 = "<b><u>".$autgd0."</u></b>";
+						//$autaff = str_replace($autgd0, $autgd1, $autaff);
+						$autgd0 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autgd0);
+						$autaff = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autaff);
+						$autaff = mise_en_evidence(wd_remove_accents($autgd0), $autaff, "<b><u>", "</u></b>");
+						$citfull[$i] = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $citfull[$i]);
+						//$citfull[$i] = mise_en_evidence(wd_remove_accents($autgd0), $citfull[$i], "<b><u>", "</u></b>");
+						$citfull[$i] = str_replace($autexp0, "<b><u>".$autexp0."</u></b>", $citfull[$i]);
+			}
+			//$autexp0 = ucwords(strtolower($autexp0));
+			//$autexp1 = "<b><u>".$autexp0."</u></b>";
+					//$autaff = str_replace($autexp0, $autexp1, $autaff);
+					$autexp0 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autexp0);
 					$autaff = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autaff);
-					$autaff = mise_en_evidence(wd_remove_accents($autgd0), $autaff, "<b><u>", "</u></b>");
+					$autaff = mise_en_evidence(wd_remove_accents($autexp0), $autaff, "<b><u>", "</u></b>");
 					$citfull[$i] = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $citfull[$i]);
-					//$citfull[$i] = mise_en_evidence(wd_remove_accents($autgd0), $citfull[$i], "<b><u>", "</u></b>");
+					//$citfull[$i] = mise_en_evidence(wd_remove_accents($autexp0), $citfull[$i], "<b><u>", "</u></b>");
 					$citfull[$i] = str_replace($autexp0, "<b><u>".$autexp0."</u></b>", $citfull[$i]);
-        }
-        //$autexp0 = ucwords(strtolower($autexp0));
-        //$autexp1 = "<b><u>".$autexp0."</u></b>";
-				//$autaff = str_replace($autexp0, $autexp1, $autaff);
-				$autexp0 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autexp0);
+			$ii += 1;
+		  }
+				if ($etal == 1) {$autaff .= ' <i> et al.</i>';}
+		}else{
+				$autexp1 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $aut);
+				$autexp2 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , prenomCompEntier($aut));
+				$autexp3 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , strtoupper($aut));
+				$autexp4 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , strtolower($aut));
+				$autexp5 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autgd);
 				$autaff = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autaff);
-				$autaff = mise_en_evidence(wd_remove_accents($autexp0), $autaff, "<b><u>", "</u></b>");
-				$citfull[$i] = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $citfull[$i]);
-				//$citfull[$i] = mise_en_evidence(wd_remove_accents($autexp0), $citfull[$i], "<b><u>", "</u></b>");
-				$citfull[$i] = str_replace($autexp0, "<b><u>".$autexp0."</u></b>", $citfull[$i]);
-        $ii += 1;
-      }
-			if ($etal == 1) {$autaff .= ' <i> et al.</i>';}
-    }else{
-			$autexp1 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $aut);
-			$autexp2 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , prenomCompEntier($aut));
-			$autexp3 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , strtoupper($aut));
-			$autexp4 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , strtolower($aut));
-			$autexp5 = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autgd);
-			$autaff = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $autaff);
-      $autaff = str_replace(array($autexp1, $autexp2, $autexp3, $autexp4, $autexp5),array($autaff1, $autaff2, $autaff3, $autaff4, $autaff5),$auteurs[$i]);
-    }
-    //si requête avec authIdHal_s
-    if ($authidhal != "" & $authidhal_mev != "") {
-      //$autaff = str_replace($authidhal_mev, "<b><u>".$authidhal_mev."</u></b>",$auteurs[$i]);
-			$authidhal_mev = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $authidhal_mev);
-			$auteurs[$i] = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $auteurs[$i]);
-			$autaff = mise_en_evidence(wd_remove_accents($authidhal_mev), $auteurs[$i], "<b><u>", "</u></b>");
-    }
-    //corrections
-		$autaff = str_replace(array("<b><u><b><u>","</b></u></b></u>","troliesp",","), array("<b><u>","</b></u>"," ",", "), $autaff);
-		$autaff = str_replace(array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf"), array(".", "-", "'", " ", "(", ")"), $autaff);
-		$citfull[$i] = str_replace(array("<b><u><b><u>","</b></u></b></u>","troliesp",","), array("<b><u>","</b></u>"," ",", "), $citfull[$i]);
-		$citfull[$i] = str_replace(array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf"), array(".", "-", "'", " ", "(", ")"), $citfull[$i]);
+		  $autaff = str_replace(array($autexp1, $autexp2, $autexp3, $autexp4, $autexp5),array($autaff1, $autaff2, $autaff3, $autaff4, $autaff5),$auteurs[$i]);
+		}
+		//si requête avec authIdHal_s
+		if ($authidhal != "" & $authidhal_mev != "") {
+		  //$autaff = str_replace($authidhal_mev, "<b><u>".$authidhal_mev."</u></b>",$auteurs[$i]);
+				$authidhal_mev = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $authidhal_mev);
+				$auteurs[$i] = str_replace(array(".", "-", "'", " ", "(", ")"), array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf") , $auteurs[$i]);
+				$autaff = mise_en_evidence(wd_remove_accents($authidhal_mev), $auteurs[$i], "<b><u>", "</u></b>");
+		}
+		//corrections
+			$autaff = str_replace(array("<b><u><b><u>","</b></u></b></u>","troliesp",","), array("<b><u>","</b></u>"," ",", "), $autaff);
+			$autaff = str_replace(array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf"), array(".", "-", "'", " ", "(", ")"), $autaff);
+			$citfull[$i] = str_replace(array("<b><u><b><u>","</b></u></b></u>","troliesp",","), array("<b><u>","</b></u>"," ",", "), $citfull[$i]);
+			$citfull[$i] = str_replace(array("trolipoint", "trolitiret", "troliapos", "troliesp", "troliparo", "troliparf"), array(".", "-", "'", " ", "(", ")"), $citfull[$i]);
+			
+		$titreaff = str_replace(array($titre, ucfirst($titre), strtoupper($titre), strtolower($titre)),array($titreaff1, $titreaff2, $titreaff3, $titreaff4),$titrehref[$i]);
+		$rvnp[$i] = str_replace(': . ', '', $rvnp[$i]);
+		if (isset($_GET['presbib']) && ($_GET['presbib'] != "br")) {
+		  $textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Indice' style='float: left; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
+		  /*
+		  //$textaff = "<dt class='ChampRes'>Indice</dt><dd class='ValeurRes Indice' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
+		  //$textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Indice' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
+		  //$textaff .= "<dt class='ChampRes'>Auteurs</dt><dd class='ValeurRes Auteurs' style='display: inline; margin-left: 0%; font-size: 1em;'>".$autaff."</dd>";
+		  $textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Auteurs' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;".$autaff."</dd>";
+		  //$textaff .= "<dt class='ChampRes'>Titre</dt><dd class='ValeurRes Titre' style='display: inline; margin-left: 0%; font-size: 1em;'>".$titreaff."</dd>";
+		  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='display: inline; margin-left: 0%; font-size: 1em;'>".$titreaff."</dd>";
+		  //$textaff .= "<dt class='ChampRes'>Détail</dt><dd class='ValeurRes Detail' style='display: inline; margin-left: 0%; font-size: 1em;'>".$rvnp[$i]."</dd>";
+		  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Detail' style='display: inline; margin-left: 0%; font-size: 1em;'>".$rvnp[$i]."</dd>";
+		  if ($doi[$i] == "-") {$doiaff = "";}else{$doiaff = $doi[$i];}
+		  //$textaff .= "<dt class='ChampRes'>DOI</dt><dd class='ValeurRes DOI' style='display: inline; margin-left: 0%; font-size: 1em;'>".$doiaff."</dd>";
+		  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes DOI' style='display: inline; margin-left: 0%; font-size: 1em;'>".$doiaff."</dd>";
+		  */
+		  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$citfull[$i]."</dd>";
+		  if ($pubmed[$i] == "-") {$pubmedaff = "";}else{$pubmedaff = str_replace('&nbsp;-&nbsp;', '', $pubmed[$i]);}
+		  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Pubmed' style='display: inline; margin-left: 0%; font-size: 1em;'>".$pubmedaff."</dd>";
+		  //$textaff .= "<dt class='ChampRes'>Accès au bibtex</dt><dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'>".$bibtex[$i]."</dd>";
+		  if ($bt == "oui") {
+			$textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'>".$bibtex[$i]."</dd>";
+		  }else{
+			$textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'></dd>";
+		  }
+		  $text .= "<dl class='NoticeRes'><div style='margin-left: 3%;'>";
+		}else{
+		  //$textaff = "<dt class='ChampRes'>Indice</dt><dd class='ValeurRes Indice' style='float: left; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
+		  $textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Indice' style='float: left; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
+		  //$textaff .= "<dt class='ChampRes'>Auteurs</dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$titreaff."</dd>";
+		  /*
+		  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$titreaff."</dd>";
+		  //$textaff .= "<dt class='ChampRes'>Titre</dt><dd class='ValeurRes Auteurs' style='font-size: 1em;'>".$autaff."</dd>";
+		  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Auteurs' style='font-size: 1em;'>".$autaff."</dd>";
+		  //$textaff .= "<dt class='ChampRes'>Détail</dt><dd class='ValeurRes Detail' style='font-size: 1em;'>".$rvnp[$i]."</dd>";
+		  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Detail' style='font-size: 1em;'>".$rvnp[$i]."</dd>";
+		  if ($doi[$i] == "-") {$doiaff = "";}else{$doiaff = $doi[$i];}
+		  //$textaff .= "<dt class='ChampRes'>DOI</dt><dd class='ValeurRes DOI' style='font-size: 1em;'>".$doiaff."</dd>";
+		  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes DOI' style='font-size: 1em;'>".$doiaff."</dd>";
+		  */
+		  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$citfull[$i]."</dd>";
+		  if ($pubmed[$i] == "-") {$pubmedaff = "";}else{$pubmedaff = $pubmed[$i];}
+		  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Pubmed' style='font-size: 1em;'>".$pubmedaff."</dd>";
+		  //$textaff .= "<dt class='ChampRes'>Accès au bibtex</dt><dd class='ValeurRes' style='display: inline; font-size: 1em;'>".$bibtex[$i]."</dd>";
+		  if ($bt == "oui") {
+			$textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes' style='display: inline; font-size: 1em;'>".$bibtex[$i]."</dd>";
+		  }else{
+			$textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes' style='display: inline; font-size: 1em;'></dd>";
+		  }
+		  $text .= "<dl class='NoticeRes'>";
+		}
+		$textaff = str_replace(", &nbsp;-", "&nbsp;-", $textaff);
+		$text .= $textaff;
+
+		//export en CSV et RTF
+		//Auteurs - titre
+		if (isset($_GET['presbib']) && ($_GET['presbib'] != "br")) {
+		  $chaine = strip_tags(str_replace(";",",",str_replace($presbib,"",$auteurs[$i]))).";";
+		  $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$titrehref[$i]))).";";
+		  $sect->writeText($cpt." - ".strip_tags(str_replace($presbib,"",$auteurs[$i])), $font);
+		  $sect->writeText($presbib, $font);
+		  $crit = $titrehref[$i];
+		  $txt1 = strip_tags($crit);
+		  $txt1 = str_replace($presbib,"",$txt1);
+		  $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
+		  $sect->writeHyperLink($txt2, $txt1, $fontlien1);
+		}else{
+		  $chaine = strip_tags(str_replace(";",",",str_replace($presbib,"",$titrehref[$i]))).";";
+		  $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$auteurs[$i]))).";";
+		  $sect->writeText($cpt." - ", $font);
+		  $crit = $titrehref[$i];
+		  $txt1 = strip_tags($crit);
+		  $txt1 = str_replace($presbib,"",$txt1);
+		  $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
+		  $sect->writeHyperLink($txt2, $txt1, $fontlien1);
+		  $sect->writeText($presbib, $font);
+		  $sect->writeText(strip_tags(str_replace($presbib,"",$auteurs[$i])), $font);
+		}
+		//Sous-titre
+		if ($subtitle[$i] != "-") {
+		  $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$subtitle[$i]))).";";
+		}else{
+		  $chaine .= ";";
+		}
+		//RVNP
+		//$chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$rvnp[$i]))).";";
+		$sect->writeText($presbib.str_replace($presbib, "", strip_tags($rvnp[$i])), $font);
+		$sect->writeText($presbib, $font);
+		//Revue
+		if ($journal[$i] != "-") {
+		  $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$journal[$i]))).";";
+		}else{
+		  $chaine .= ";";
+		}
+		//Editeur
+		if ($mef != 1) {
+		  if ($journalPublisher[$i] == "-") {$editeur = $scientificEditor[$i];}else{$editeur = $journalPublisher[$i];}
+		  if ($editeur != "-") {
+			$chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$editeur))).";";
+		  }else{
+			$chaine .= ";";
+		  }
+		}
+		//Année
+		if ($prodate[$i] != "-") {
+		  $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$prodate[$i]))).";";
+		}else{
+		  $chaine .= ";";
+		}
+		//Volume
+		if ($volume[$i] != "-") {
+		  $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$volume[$i]))).";";
+		}else{
+		  $chaine .= ";";
+		}
+		//Issue
+		if ($mef != 1) {
+		  if ($issue[$i] != "-") {
+			$chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$issue[$i]))).";";
+		  }else{
+			$chaine .= ";";
+		  }
+		}
+		//Pages
+		if ($page[$i] != "-") {
+		  $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$page[$i]))).";";
+		}else{
+		  $chaine .= ";";
+		}
+		//DOI
+		if ($doi[$i] != "-") {
+		  $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$doi[$i]))).";";
+		}else{
+		  $chaine .= ";";
+		}
+		if ($doi[$i] != "-") {
+		  $crit = $doi[$i];
+		  $sect->writeText("DOI : ", $font);
+		  $txt1 = str_replace("DOI : ","",strip_tags($crit));
+		  $txt1 = str_replace($presbib,"",$txt1);
+		  $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
+		  $sect->writeHyperLink($txt2, $txt1, $fontlien2);
+		}
+		//Pubmed
+		if ($pubmed[$i] != "-") {
+		  $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$pubmed[$i]))).";";
+		}else{
+		  $chaine .= ";";
+		}
+		if ($pubmed[$i] != "-") {
+		  $crit = $pubmed[$i];
+		  $sect->writeText($presbib, $font);
+		  $sect->writeText("Pubmed : ", $font);
+		  $txt1 = str_replace("Pubmed : ","",strip_tags($crit));
+		  $txt1 = str_replace($presbib,"",$txt1);
+		  $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
+		  $sect->writeHyperLink($txt2, $txt1, $fontlien2);
+		}
+		//Bibtex
+		if ($bt == "oui") {
+		  if ($bibtex[$i] != "-") {
+			$chaine .= str_replace(";",",",str_replace($presbib,"",str_replace(array("&nbsp;","target='_blank' "),"",$bibtex[$i])));
+		  }else{
+			$chaine .= ";";
+		  }
+		  $sect->writeText($presbib, $font);
+		  $crit = $bibtex[$i];
+		  $txt1 = "Bibtex";
+		  $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
+		  $sect->writeHyperLink($txt2, $txt1, $fontlien2);
+		}else{
+		  $sect->writeText($presbib, $font);
+		}
+
+		//PDF
+		$j = 1;
+		//si plusieurs PDF
+		while (isset(${"pdf".$j}[$i])) {
+		  if (${"pdf".$j}[$i] != "-")  {$text .= ${"pdf".$j}[$i];}
+		  $j++;
+		}
+		for($j = 1; $j <= 5; $j++) {
+		  if (${"pdf".$j}[$i] != "-") {
+			$chaine .= ";".str_replace(";",",",str_replace(array("&nbsp;","target='_blank' "),"",${"pdf".$j}[$i]));
+		  }else{
+			$chaine .= ";";
+		  }
+		  $crit = ${"pdf".$j}[$i];
+		  if ($crit != "-") {
+			$sect->writeText(" - ", $font);
+			$txt1 = "PDF".$j;
+			$txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
+			$sect->writeHyperLink($txt2, $txt1, $fontlien2);
+		  }
+		}
+		//reprint
+		$chaine .= ";".str_replace(";",",",str_replace($presbib,"",str_replace("&nbsp;","",$reprint[$i])));
+		$crit = $reprint[$i];
+		if ($crit != "&nbsp;") {
+		  $sect->writeText(" - ", $font);
+		  $txt1 = "Reprint";
+		  $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
+		  $sect->writeHyperLink($txt2, $txt1, $fontlien2);
+		}
+		//Affichage
+		if (isset($_GET['presbib']) && ($_GET['presbib'] != "br")) {
+		  //$text .= "<dt class='ChampRes'>Reprint</dt><dd class='ValeurRes Reprint' style='display: inline; margin-left: 0%;'>".$reprint[$i]."</dd></div></dl>\r\n";
+		  $text .= "<dd class='ValeurRes Reprint' style='display: inline; margin-left: 0%;'>".$reprint[$i]."</dd></div></dl>\r\n";
+		}else{
+		  //$text .= "<dt class='ChampRes'>Reprint</dt><dd class='ValeurRes Reprint' style='display: inline; margin-left: 0%;'>".$reprint[$i]."</dd></dl>\r\n";
+		  $text .= "<dd class='ValeurRes Reprint' style='display: inline; margin-left: 0%;'>".$reprint[$i]."</dd></dl>\r\n";
+		}
 		
-    $titreaff = str_replace(array($titre, ucfirst($titre), strtoupper($titre), strtolower($titre)),array($titreaff1, $titreaff2, $titreaff3, $titreaff4),$titrehref[$i]);
-    $rvnp[$i] = str_replace(': . ', '', $rvnp[$i]);
-    if (isset($_GET['presbib']) && ($_GET['presbib'] != "br")) {
-	  $textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Indice' style='float: left; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
-	  /*
-	  //$textaff = "<dt class='ChampRes'>Indice</dt><dd class='ValeurRes Indice' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
-      //$textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Indice' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
-      //$textaff .= "<dt class='ChampRes'>Auteurs</dt><dd class='ValeurRes Auteurs' style='display: inline; margin-left: 0%; font-size: 1em;'>".$autaff."</dd>";
-      $textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Auteurs' style='display: inline; margin-left: 0%; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;".$autaff."</dd>";
-      //$textaff .= "<dt class='ChampRes'>Titre</dt><dd class='ValeurRes Titre' style='display: inline; margin-left: 0%; font-size: 1em;'>".$titreaff."</dd>";
-      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='display: inline; margin-left: 0%; font-size: 1em;'>".$titreaff."</dd>";
-      //$textaff .= "<dt class='ChampRes'>Détail</dt><dd class='ValeurRes Detail' style='display: inline; margin-left: 0%; font-size: 1em;'>".$rvnp[$i]."</dd>";
-      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Detail' style='display: inline; margin-left: 0%; font-size: 1em;'>".$rvnp[$i]."</dd>";
-      if ($doi[$i] == "-") {$doiaff = "";}else{$doiaff = $doi[$i];}
-      //$textaff .= "<dt class='ChampRes'>DOI</dt><dd class='ValeurRes DOI' style='display: inline; margin-left: 0%; font-size: 1em;'>".$doiaff."</dd>";
-      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes DOI' style='display: inline; margin-left: 0%; font-size: 1em;'>".$doiaff."</dd>";
-	  */
-	  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$citfull[$i]."</dd>";
-      if ($pubmed[$i] == "-") {$pubmedaff = "";}else{$pubmedaff = str_replace('&nbsp;-&nbsp;', '', $pubmed[$i]);}
-      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Pubmed' style='display: inline; margin-left: 0%; font-size: 1em;'>".$pubmedaff."</dd>";
-      //$textaff .= "<dt class='ChampRes'>Accès au bibtex</dt><dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'>".$bibtex[$i]."</dd>";
-      if ($bt == "oui") {
-        $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'>".$bibtex[$i]."</dd>";
-      }else{
-        $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes LienBibtex' style='display: inline; margin-left: 0%; font-size: 1em;'></dd>";
-      }
-      $text .= "<dl class='NoticeRes'><div style='margin-left: 3%;'>";
-    }else{
-      //$textaff = "<dt class='ChampRes'>Indice</dt><dd class='ValeurRes Indice' style='float: left; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
-      $textaff = "<dt class='ChampRes'></dt><dd class='ValeurRes Indice' style='float: left; font-size: 1em;'>".$cpt ."&nbsp;-&nbsp;</dd>";
-      //$textaff .= "<dt class='ChampRes'>Auteurs</dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$titreaff."</dd>";
-	  /*
-      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$titreaff."</dd>";
-      //$textaff .= "<dt class='ChampRes'>Titre</dt><dd class='ValeurRes Auteurs' style='font-size: 1em;'>".$autaff."</dd>";
-      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Auteurs' style='font-size: 1em;'>".$autaff."</dd>";
-      //$textaff .= "<dt class='ChampRes'>Détail</dt><dd class='ValeurRes Detail' style='font-size: 1em;'>".$rvnp[$i]."</dd>";
-      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Detail' style='font-size: 1em;'>".$rvnp[$i]."</dd>";
-	  if ($doi[$i] == "-") {$doiaff = "";}else{$doiaff = $doi[$i];}
-      //$textaff .= "<dt class='ChampRes'>DOI</dt><dd class='ValeurRes DOI' style='font-size: 1em;'>".$doiaff."</dd>";
-      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes DOI' style='font-size: 1em;'>".$doiaff."</dd>";
-	  */
-	  $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Titre' style='font-size: 1em;'>".$citfull[$i]."</dd>";
-      if ($pubmed[$i] == "-") {$pubmedaff = "";}else{$pubmedaff = $pubmed[$i];}
-      $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes Pubmed' style='font-size: 1em;'>".$pubmedaff."</dd>";
-      //$textaff .= "<dt class='ChampRes'>Accès au bibtex</dt><dd class='ValeurRes' style='display: inline; font-size: 1em;'>".$bibtex[$i]."</dd>";
-      if ($bt == "oui") {
-        $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes' style='display: inline; font-size: 1em;'>".$bibtex[$i]."</dd>";
-      }else{
-        $textaff .= "<dt class='ChampRes'></dt><dd class='ValeurRes' style='display: inline; font-size: 1em;'></dd>";
-      }
-      $text .= "<dl class='NoticeRes'>";
-    }
-    $textaff = str_replace(", &nbsp;-", "&nbsp;-", $textaff);
-    $text .= $textaff;
+		//export en CSV
+		fwrite($inF,$chaine.chr(13).chr(10));
 
-    //export en CSV et RTF
-    //Auteurs - titre
-    if (isset($_GET['presbib']) && ($_GET['presbib'] != "br")) {
-      $chaine = strip_tags(str_replace(";",",",str_replace($presbib,"",$auteurs[$i]))).";";
-      $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$titrehref[$i]))).";";
-      $sect->writeText($cpt." - ".strip_tags(str_replace($presbib,"",$auteurs[$i])), $font);
-      $sect->writeText($presbib, $font);
-      $crit = $titrehref[$i];
-      $txt1 = strip_tags($crit);
-      $txt1 = str_replace($presbib,"",$txt1);
-      $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
-      $sect->writeHyperLink($txt2, $txt1, $fontlien1);
-    }else{
-      $chaine = strip_tags(str_replace(";",",",str_replace($presbib,"",$titrehref[$i]))).";";
-      $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$auteurs[$i]))).";";
-      $sect->writeText($cpt." - ", $font);
-      $crit = $titrehref[$i];
-      $txt1 = strip_tags($crit);
-      $txt1 = str_replace($presbib,"",$txt1);
-      $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
-      $sect->writeHyperLink($txt2, $txt1, $fontlien1);
-      $sect->writeText($presbib, $font);
-      $sect->writeText(strip_tags(str_replace($presbib,"",$auteurs[$i])), $font);
-    }
-    //Sous-titre
-    if ($subtitle[$i] != "-") {
-      $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$subtitle[$i]))).";";
-    }else{
-      $chaine .= ";";
-    }
-    //RVNP
-    //$chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$rvnp[$i]))).";";
-    $sect->writeText($presbib.str_replace($presbib, "", strip_tags($rvnp[$i])), $font);
-    $sect->writeText($presbib, $font);
-    //Revue
-    if ($journal[$i] != "-") {
-      $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$journal[$i]))).";";
-    }else{
-      $chaine .= ";";
-    }
-    //Editeur
-    if ($mef != 1) {
-      if ($journalPublisher[$i] == "-") {$editeur = $scientificEditor[$i];}else{$editeur = $journalPublisher[$i];}
-      if ($editeur != "-") {
-        $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$editeur))).";";
-      }else{
-        $chaine .= ";";
-      }
-    }
-    //Année
-    if ($prodate[$i] != "-") {
-      $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$prodate[$i]))).";";
-    }else{
-      $chaine .= ";";
-    }
-    //Volume
-    if ($volume[$i] != "-") {
-      $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$volume[$i]))).";";
-    }else{
-      $chaine .= ";";
-    }
-    //Issue
-    if ($mef != 1) {
-      if ($issue[$i] != "-") {
-        $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$issue[$i]))).";";
-      }else{
-        $chaine .= ";";
-      }
-    }
-    //Pages
-    if ($page[$i] != "-") {
-      $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$page[$i]))).";";
-    }else{
-      $chaine .= ";";
-    }
-    //DOI
-    if ($doi[$i] != "-") {
-      $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$doi[$i]))).";";
-    }else{
-      $chaine .= ";";
-    }
-    if ($doi[$i] != "-") {
-      $crit = $doi[$i];
-      $sect->writeText("DOI : ", $font);
-      $txt1 = str_replace("DOI : ","",strip_tags($crit));
-      $txt1 = str_replace($presbib,"",$txt1);
-      $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
-      $sect->writeHyperLink($txt2, $txt1, $fontlien2);
-    }
-    //Pubmed
-    if ($pubmed[$i] != "-") {
-      $chaine .= strip_tags(str_replace(";",",",str_replace($presbib,"",$pubmed[$i]))).";";
-    }else{
-      $chaine .= ";";
-    }
-    if ($pubmed[$i] != "-") {
-      $crit = $pubmed[$i];
-      $sect->writeText($presbib, $font);
-      $sect->writeText("Pubmed : ", $font);
-      $txt1 = str_replace("Pubmed : ","",strip_tags($crit));
-      $txt1 = str_replace($presbib,"",$txt1);
-      $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
-      $sect->writeHyperLink($txt2, $txt1, $fontlien2);
-    }
-    //Bibtex
-    if ($bt == "oui") {
-      if ($bibtex[$i] != "-") {
-        $chaine .= str_replace(";",",",str_replace($presbib,"",str_replace(array("&nbsp;","target='_blank' "),"",$bibtex[$i])));
-      }else{
-        $chaine .= ";";
-      }
-      $sect->writeText($presbib, $font);
-      $crit = $bibtex[$i];
-      $txt1 = "Bibtex";
-      $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
-      $sect->writeHyperLink($txt2, $txt1, $fontlien2);
-    }else{
-      $sect->writeText($presbib, $font);
-    }
-
-    //PDF
-    $j = 1;
-    //si plusieurs PDF
-    while (isset(${"pdf".$j}[$i])) {
-      if (${"pdf".$j}[$i] != "-")  {$text .= ${"pdf".$j}[$i];}
-      $j++;
-    }
-    for($j = 1; $j <= 5; $j++) {
-      if (${"pdf".$j}[$i] != "-") {
-        $chaine .= ";".str_replace(";",",",str_replace(array("&nbsp;","target='_blank' "),"",${"pdf".$j}[$i]));
-      }else{
-        $chaine .= ";";
-      }
-      $crit = ${"pdf".$j}[$i];
-      if ($crit != "-") {
-        $sect->writeText(" - ", $font);
-        $txt1 = "PDF".$j;
-        $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
-        $sect->writeHyperLink($txt2, $txt1, $fontlien2);
-      }
-    }
-    //reprint
-    $chaine .= ";".str_replace(";",",",str_replace($presbib,"",str_replace("&nbsp;","",$reprint[$i])));
-    $crit = $reprint[$i];
-    if ($crit != "&nbsp;") {
-      $sect->writeText(" - ", $font);
-      $txt1 = "Reprint";
-      $txt2 = substr($crit,strpos($crit,"href='")+6,strpos($crit,"'>")-strpos($crit,"href='")-6);
-      $sect->writeHyperLink($txt2, $txt1, $fontlien2);
-    }
-    //Affichage
-    if (isset($_GET['presbib']) && ($_GET['presbib'] != "br")) {
-      //$text .= "<dt class='ChampRes'>Reprint</dt><dd class='ValeurRes Reprint' style='display: inline; margin-left: 0%;'>".$reprint[$i]."</dd></div></dl>\r\n";
-      $text .= "<dd class='ValeurRes Reprint' style='display: inline; margin-left: 0%;'>".$reprint[$i]."</dd></div></dl>\r\n";
-    }else{
-      //$text .= "<dt class='ChampRes'>Reprint</dt><dd class='ValeurRes Reprint' style='display: inline; margin-left: 0%;'>".$reprint[$i]."</dd></dl>\r\n";
-      $text .= "<dd class='ValeurRes Reprint' style='display: inline; margin-left: 0%;'>".$reprint[$i]."</dd></dl>\r\n";
-    }
-	
-    //export en CSV
-    fwrite($inF,$chaine.chr(13).chr(10));
-
-    //export en RTF
-    $sect->writeText("<br><br>", $font);
-    $rtf->save($Fnm2);
-		
-		if (isset($_GET['typord']) && ($_GET['typord'] == "asc" || $_GET['typord'] == "descInv")) {$cpt--;}else{$cpt++;}
+		//export en RTF
+		$sect->writeText("<br><br>", $font);
+		$rtf->save($Fnm2);
+			
+			if (isset($_GET['typord']) && ($_GET['typord'] == "asc" || $_GET['typord'] == "descInv")) {$cpt--;}else{$cpt++;}
+	  }
   }
 }
 
