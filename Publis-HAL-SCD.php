@@ -1907,13 +1907,21 @@ if (!empty($subtitle)) {
 		if (isset($_GET['typord']) && ($_GET['typord'] == "asc")) {
 			array_multisort($typdoctab, $prodate, SORT_ASC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
 		}else{
-			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
+			if (isset($_GET['typord']) && ($_GET['typord'] == "rev")) {//Tri sur le type, puis sur l'année, puis sr le titre de la revue
+				array_multisort($typdoctab, $prodate, $rvnp, SORT_ASC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
+			}else{
+				array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
+			}
 		}
   }else{
 		if ($anneedeb != $anneefin) {//Si recherche sur différentes années, classer par années décroissantes, puis par auteurs
 			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
 		}else{
-			array_multisort($typdoctab, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $prodate, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
+			if (isset($_GET['typord']) && ($_GET['typord'] == "rev")) {
+				array_multisort($typdoctab, $prodate, $rvnp, SORT_ASC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
+			}else{
+				array_multisort($typdoctab, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $prodate, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
+			}
 		}
   }
 }
