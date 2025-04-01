@@ -1104,7 +1104,7 @@ while (isset($labosur[$ii])) {
 	if (!empty($autvar)) {
 		$anneedeb = 1970;
 		$anneefin = date('Y', time());
-		if (empty($auteur_exp)) {$anneedeb = $anneefin - 2;}
+		//if (empty($auteur_exp)) {$anneedeb = $anneefin - 2;}
 		$collection_exp = "";
 		if (!empty($_GET["collection_exp"])) {
 			$collection_exp = $_GET["collection_exp"];
@@ -1796,7 +1796,7 @@ while (isset($labosur[$ii])) {
     if(isset($colloque[$i])) {$test = str_replace($colloque[$i], "<i>".$colloque[$i]."</i>", $test);}
     //echo $i.' => '.$label[$i].'<br>';
     //echo $i.'bis => '.$test.'<br>';
-    $rvnp[$i] = $test.$presbib;
+    $rvnp[$i] = trim($test.$presbib);
 		$rvnp[$i] = str_replace(trim($titreseul[$i]).". ", "", $rvnp[$i]);
 		if (isset($doinit[$i]) && $affDoi != "oui") {$rvnp[$i] = str_replace("&#x27E8;".$doinit[$i]."&#x27E9;. ", "", $rvnp[$i]);}
 		if (isset($idhal[$i]) && $affIdh != "oui") {$rvnp[$i] = str_replace("&#x27E8;".$idhal[$i]."&#x27E9;", "", $rvnp[$i]);}
@@ -1917,7 +1917,7 @@ if (!empty($subtitle)) {
 		if ($anneedeb != $anneefin) {//Si recherche sur différentes années, classer par années décroissantes, puis par auteurs
 			array_multisort($typdoctab, $prodate, SORT_DESC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
 		}else{
-			if (isset($_GET['typord']) && ($_GET['typord'] == "rev")) {
+			if (isset($_GET['typord']) && ($_GET['typord'] == "rev")) {//Tri sur le type, puis sur l'année, puis sr le titre de la revue
 				array_multisort($typdoctab, $prodate, $rvnp, SORT_ASC, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
 			}else{
 				array_multisort($typdoctab, $premautab, $auteurs, $auteursinit, $titrehref, $subtitle, $rvnp, $prodate, $journal, $volume, $issue, $page, $journalPublisher, $scientificEditor, $doi, $pubmed, $bibtex, $pdf1, $pdf2, $pdf3, $pdf4, $pdf5, $reprint, $citfull);
