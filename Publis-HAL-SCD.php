@@ -496,6 +496,10 @@ if (isset($_GET['auteur_exp']) && ($_GET['auteur_exp'] != "") && strpos($_GET['a
 }
 
 $autvar = "";
+$listenominit = "";
+$listenominit2 = "";
+$arriv = "";
+$depar = "";
 if (isset($_GET['autvar']) && !empty($_GET['autvar'])) {
 	$autvar = wd_remove_accents($_GET['autvar']);
 	$tabaut = explode('~', $autvar);
@@ -817,7 +821,7 @@ $text = "<br>";
 if ($typform == $form9p) {//sans formulaire et vue intégrale
   if (isset($_GET['anneedeb'])) {$anneedeb = htmlspecialchars($_GET['anneedeb']);}else{$anneedeb = "2000";}
   //if (isset($_GET['anneedeb'])) {$anneedeb = htmlspecialchars($_GET['anneedeb']);}else{$anneedeb = $anneen - 2;}
-  if (empty($auteur_exp)) {$anneedeb = $anneefin - 2;}
+  if (empty($auteur_exp)) {$anneedeb = 2000;}
   if (isset($_GET['anneefin'])) {$anneefin = htmlspecialchars($_GET['anneefin']);}else{$anneefin = $anneen;}
 	if (isset($_GET['mef']) && $_GET['mef'] != 1) {
     if (isset($_GET['ensref']) && $_GET['ensref'] == "oui") {
