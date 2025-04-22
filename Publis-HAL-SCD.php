@@ -1462,7 +1462,8 @@ while (isset($labosur[$ii])) {
 	}
 	
 	//Recherche des auteurs de la collection grâce aux affiliations
-	if ($ids != "~" && empty($autvar)) {
+	//if ($ids != "~" && empty($autvar)) {
+	if ($ids != "~") {
 		$contents = file_get_contents(str_replace("wt=xml&", "", $URL));
 		//$contents = utf8_encode($contents);
 		$results = json_decode($contents);
