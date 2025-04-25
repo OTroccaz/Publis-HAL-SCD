@@ -678,7 +678,7 @@ if ($annee_publideb != "" || $anneedep != "") {
   }
 }else{
   if ($typform == $form9s || $typform == $form9p) {//formulaire complet ou vue intégrale sans formulaire
-    $anneedep = 2000;//année jusqu'où remonter dans le formulaire complet
+    $anneedep = 1990;//année jusqu'où remonter dans le formulaire complet
 	//$anneedep = date('Y', time()) - 2;
   }else{
     $nbanneesfs = 8;//nombre d'années à afficher dans le formulaire simplifié
@@ -812,16 +812,16 @@ if (isset($_GET['typdoc']) && ($_GET['typdoc'] != "")) {$typdocinit = htmlspecia
 if (isset($_GET['anneedeb'])) {$anneedeb = htmlspecialchars($_GET['anneedeb']);}else{$anneedeb = $anneen; $anneefin = $anneen;}
 if (isset($_GET['anneefin'])) {$anneefin = htmlspecialchars($_GET['anneefin']);}else{if (isset($_GET['anneedeb'])) {$anneefin = htmlspecialchars($_GET['anneedeb']);}else{$anneefin = $anneedeb;}}
 
-//Si pas de recherche sur un auteur, i.e. pas pour alimenter une page perso, forcer anneedeb à 2000
-if (empty($auteur_exp) && $anneedeb != $anneefin) {$anneedeb = "2000";}
+//Si pas de recherche sur un auteur, i.e. pas pour alimenter une page perso, forcer anneedeb à 1990
+if (empty($auteur_exp) && $anneedeb != $anneefin) {$anneedeb = "1990";}
 // vérification sur ordre des années si différentes
 if ($anneefin < $anneedeb) {$anneetemp = $anneedeb; $anneedeb = $anneefin; $anneefin = $anneetemp;}
 //$text = "<div id='res_script'><div style='text-align: center;'><h2><b>".$labo." - Publications</b></h2></div><br>\r\n";
 $text = "<br>";
 if ($typform == $form9p) {//sans formulaire et vue intégrale
-  if (isset($_GET['anneedeb'])) {$anneedeb = htmlspecialchars($_GET['anneedeb']);}else{$anneedeb = "2000";}
+  if (isset($_GET['anneedeb'])) {$anneedeb = htmlspecialchars($_GET['anneedeb']);}else{$anneedeb = "1990";}
   //if (isset($_GET['anneedeb'])) {$anneedeb = htmlspecialchars($_GET['anneedeb']);}else{$anneedeb = $anneen - 2;}
-  if (empty($auteur_exp)) {$anneedeb = 2000;}
+  if (empty($auteur_exp)) {$anneedeb = 1990;}
   if (isset($_GET['anneefin'])) {$anneefin = htmlspecialchars($_GET['anneefin']);}else{$anneefin = $anneen;}
 	if (isset($_GET['mef']) && $_GET['mef'] != 1) {
     if (isset($_GET['ensref']) && $_GET['ensref'] == "oui") {
@@ -1106,7 +1106,7 @@ while (isset($labosur[$ii])) {
     }
   }
 	if (!empty($autvar)) {
-		$anneedeb = 2000;
+		$anneedeb = 1990;
 		$anneefin = date('Y', time());
 		//if (empty($auteur_exp)) {$anneedeb = $anneefin - 2;}
 		$collection_exp = "";
