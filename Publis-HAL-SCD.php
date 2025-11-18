@@ -740,7 +740,7 @@ $a = $anneen;
 <head>
   <title>Les publications HAL <?php echo($entite);?></title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-	<script src="./Publis-HAL-SCD.js"></script>
+  <!-- <script src="./Publis-HAL-SCD.js"></script> -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   <script type='text/x-mathjax-config'>
     MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['$$','$$']]}});
