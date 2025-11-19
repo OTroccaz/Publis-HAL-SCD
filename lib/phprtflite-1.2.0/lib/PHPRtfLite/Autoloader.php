@@ -55,23 +55,41 @@ class PHPRtfLite_Autoloader
      */
     public static function autoload($className)
     {
-        // validate classname
-        if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/m', $className)) {
-            throw new Exception("Class name '$className' is invalid");
-        }
+			if (strpos($className, "pDraw") === false
+				&& strpos($className, "pData") === false
+				&& strpos($className, "pColor") === false
+				&& strpos($className, "pException") === false
+				&& strpos($className, "pCharts") === false
+				&& strpos($className, "pBubble") === false
+				&& strpos($className, "pcolorGradient") === false
+				&& strpos($className, "pIndicator") === false
+				&& strpos($className, "pPie") === false
+				&& strpos($className, "pPyramid") === false
+				&& strpos($className, "pRadar") === false
+				&& strpos($className, "pScatter") === false
+				&& strpos($className, "pSpring") === false
+				&& strpos($className, "pStock") === false
+				&& strpos($className, "pSurface") === false
+			) {
+				// validate classname
+				if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/m', $className)) {
+						throw new Exception("Class name '$className' is invalid");
+				}
 
-        $classFile = self::$_baseDir . '/' . str_replace('_', '/', $className) . '.php';
+				$classFile = self::$_baseDir . '/' . str_replace('_', '/', $className) . '.php';
+			
+			
+				// check if file exists
+				if (!file_exists($classFile)) {
+						throw new Exception("File $classFile does not exist!");
+				}
 
-        // check if file exists
-        if (!file_exists($classFile)) {
-            throw new Exception("File $classFile does not exist!");
-        }
+				require $classFile;
 
-        require $classFile;
-
-        if (!class_exists($className) && !interface_exists($className)) {
-            throw new Exception("Class $className could not be found!");
-        }
+				if (!class_exists($className) && !interface_exists($className)) {
+						throw new Exception("Class $className could not be found!");
+				}
+			}
     }
 
 }
