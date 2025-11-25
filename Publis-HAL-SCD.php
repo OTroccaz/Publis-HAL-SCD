@@ -533,7 +533,7 @@ if (date ('m') == 11 || date ('m') == 12) {
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	}
   $resultat = curl_exec($ch);
-  curl_close($ch);
+  //curl_close($ch); > Function curl_close() is deprecated since PHP 8.5
   $dom = new DOMDocument();
   $dom->loadXML($resultat);
   $res0 = $dom->getElementsByTagName('response');
@@ -1450,7 +1450,7 @@ while (isset($labosur[$ii])) {
   //$resultat = str_replace(">", ">\r\n", $resultat);
   //echo "Début<br>".$resultat."Fin<br>";
   
-  curl_close($ch);
+  //curl_close($ch); > Function curl_close() is deprecated since PHP 8.5
   $dom = new DOMDocument();
   $dom->loadXML($resultat);
 
