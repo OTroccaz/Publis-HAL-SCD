@@ -1,6 +1,6 @@
 <?php
 header('Content-type: text/html; charset=UTF-8');
-
+		
 //Nettoyage URL
 $redir = "non";
 $root = 'http';
@@ -336,6 +336,56 @@ function varAut($autvar) {
 //Suppression des fichiers du dossier HAL créés il y a plus d'une heure
 suppression("./HAL", 3600);
 
+//Suppression des fichiers du dossier rate_limit créés il y a plus d'une heure
+suppression("./rate_limit", 3600);
+
+//Test blocage IP
+$maxRequests = 60;// Nombre max de requêtes autorisées
+$timeWindow  = 60;// Fenêtre de temps en secondes (ici 60 secondes)
+$storageDir  = './rate_limit'; // Dossier de stockage
+
+//Récupération de l'adresse IP du client (on cherche d'abord à savoir s'il est derrière un proxy)
+if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+  $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+}elseif(isset($_SERVER['HTTP_CLIENT_IP'])) {
+  $ip = $_SERVER['HTTP_CLIENT_IP'];
+}else {
+  $ip = $_SERVER['REMOTE_ADDR'];
+}
+
+$file = $storageDir . '/' . md5($ip) . '.json';
+
+// Lecture des données existantes
+$data = ['count' => 0, 'start' => time()];
+if (file_exists($file)) {
+    $data = json_decode(file_get_contents($file), true);
+}
+
+// Réinitialisation si la fenêtre est dépassée
+if (time() - $data['start'] > $timeWindow) {
+    $data['count'] = 0;
+    $data['start'] = time();
+}
+
+// Incrémentation
+$data['count']++;
+
+// Sauvegarde
+file_put_contents($file, json_encode($data));
+
+// Vérification
+if ($data['count'] > $maxRequests) {
+    header('HTTP/1.1 429 Too Many Requests');
+    header('Retry-After: ' . $timeWindow);
+    die("Trop de requêtes. Réessayez dans {$timeWindow} secondes.");
+}
+
+/*
+echo time() - $_SESSION[$ip]['first_attempt_time'];
+echo '<br>';
+var_dump($_SESSION);
+*/
+
 //Unicité des fichiers CSV et RTF créés
 $unicite = time();
 
@@ -355,7 +405,7 @@ if ($lang == "fr") {//français
                 "7" => "Rapports de recherche",
                 "8" => "Images",
                 "9" => "Ouvrages scientifiques",
-                "10" => "Direction d'ouvrages scientifiques",
+                "10" => "Recueil Des Communications",
                 "11" => "Mémoire",
                 "12" => "HDR (Habilitation à Diriger des Recherches)",
                 "13" => "Brevet",
@@ -368,7 +418,9 @@ if ($lang == "fr") {//français
                 "20" => "Articles sans comité de lecture de revues nationales",
 				"21" => "N° spécial de revue",
 				"22" => "Logiciels",
-				"23" => "Working papers");
+				"23" => "Working papers",
+				"24" => "Vidéos",
+				"25" => "Article de Blog Scientifique");
   $form1 = "Tri par année : de ";
   $form2 = " à ";
   $form3 = "Nombre de publications par page : " ;
@@ -410,7 +462,7 @@ if ($lang == "fr") {//français
                 "7" => "Research reports",
                 "8" => "Picture",
                 "9" => "Books",
-                "10" => "Edition of book or proceedings",
+                "10" => "Proceedings",
                 "11" => "Preprints, Working Papers, ...",
                 "12" => "Habilitation research",
                 "13" => "Patent",
@@ -423,7 +475,9 @@ if ($lang == "fr") {//français
                 "20" => "National non-refereed journal articles",
 				"21" => "N° spécial de revue",
 				"22" => "Softwares",
-				"23" => "Working papers");
+				"23" => "Working papers",
+				"24" => "Videos",
+				"25" => "Scientific Blog Post");
   $form1 = "Years: from ";
   $form2 = " to ";
   $form3 = "Number of publications per page: ";
@@ -519,13 +573,13 @@ if (isset($_GET['autvar']) && !empty($_GET['autvar'])) {
 $qte = 0;
 if (date ('m') == 11 || date ('m') == 12) {
   $anneen = date('Y', time())+1;
-  $url = "http://api.archives-ouvertes.fr/search/?wt=xml&q=collCode_s:".$collection_exp."&rows=100000&fq=producedDateY_i:".$anneen;
+  $url = "https://api.archives-ouvertes.fr/search/?wt=xml&q=collCode_s:".$collection_exp."&rows=100000&fq=producedDateY_i:".$anneen;
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_HEADER, 0);
   curl_setopt($ch, CURLOPT_TIMEOUT, 50); //timeout en secondes
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur.univ-rennes.fr)');
+  curl_setopt($ch, CURLOPT_USERAGENT, 'CSSD (https://halur.ccsd.cnrs.fr)');
   if (isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
@@ -557,7 +611,7 @@ if (isset($_GET['mailto']) && ($_GET['mailto'] != "")) {
 if (isset($_GET['css']) && ($_GET['css'] != "")) {
   $css = htmlspecialchars($_GET['css']);
 }else{
-  $css = "https://halur.univ-rennes.fr/HAL_SCD.css";
+  $css = "https://halur.ccsd.cnrs.fr/HAL_SCD.css";
 }
 if (isset($_GET['bt']) && ($_GET['bt'] != "")) {
   $bt = htmlspecialchars($_GET['bt']);
@@ -893,9 +947,9 @@ if ($typform == $form9s) {//formulaire de recherche complet
   $text .= "<option value='IMG'".$txt.">".$typdocHAL['8']."</option>\r\n";
   if($typdoc == "OUV") {$txt = " selected";}else{$txt = "";}
   $text .= "<option value='OUV'".$txt.">".$typdocHAL['9']."</option>\r\n";
-  if($typdoc == "DOUV") {$txt = " selected";}else{$txt = "";}
-  $text .= "<option value='DOUV'".$txt.">".$typdocHAL['10']."</option>\r\n";
-	if($typdoc == "ISSUE") {$txt = " selected";}else{$txt = "";}
+  if($typdoc == "PROCEEDINGS") {$txt = " selected";}else{$txt = "";}
+  $text .= "<option value='PROCEEDINGS'".$txt.">".$typdocHAL['10']."</option>\r\n";
+  if($typdoc == "ISSUE") {$txt = " selected";}else{$txt = "";}
   $text .= "<option value='ISSUE'".$txt.">".$typdocHAL['21']."</option>\r\n";
   if($typdoc == "MEM") {$txt = " selected";}else{$txt = "";}
   $text .= "<option value='MEM'".$txt.">".$typdocHAL['11']."</option>\r\n";
@@ -913,6 +967,10 @@ if ($typform == $form9s) {//formulaire de recherche complet
   $text .= "<option value='SOFTWARE'".$txt.">".$typdocHAL['22']."</option>\r\n";
   if($typdoc == "WORKINGPAPER") {$txt = " selected";}else{$txt = "";}
   $text .= "<option value='WORKINGPAPER'".$txt.">".$typdocHAL['23']."</option>\r\n";
+  if($typdoc == "VIDEO") {$txt = " selected";}else{$txt = "";}
+  $text .= "<option value='VIDEO'".$txt.">".$typdocHAL['24']."</option>\r\n";
+  if($typdoc == "BLOG") {$txt = " selected";}else{$txt = "";}
+  $text .= "<option value='BLOG'".$txt.">".$typdocHAL['25']."</option>\r\n";
   $text .= "</select><br>\r\n";
   $text .= "</div>";
   //présentation bibliographique
@@ -991,7 +1049,7 @@ if ($typform == $form9s) {//formulaire de recherche complet
     $text .= "<input type='hidden' name='lim_aut' value='".$lim_aut."'>\r\n";
     $text .= "<input type='hidden' name='annee_excl' value='".$annee_excl."'>\r\n";
     $text .= "<input type='hidden' name='ipas' value='".$ipas."'>\r\n";
-		$text .= "<input type='hidden' name='typord' value='".$typord."'>\r\n";
+	$text .= "<input type='hidden' name='typord' value='".$typord."'>\r\n";
     $text .= "<input type='hidden' name='ideb' value='1'>\r\n";
     $text .= "<input type='hidden' name='typform' value='".$form9c."'>\r\n";
     $text .= "<br><input class='btn btn-md btn-primary' type='submit' value='".$form8."'>&nbsp;&nbsp;&nbsp;";
@@ -1061,7 +1119,7 @@ while (isset($labosur[$ii])) {
   $dom = new DomDocument;
   //$URL = 'http://api-preprod.archives-ouvertes.fr/search/?wt=xml&q=labStructCode_s:"UMR6553"&fq=producedDateY_i:"2014"&fl=title_s,label_s,uri_s,abstract_s,docType_s,doiId_s,label_bibtex,keyword_s,authFullName_s&sort=auth_sort asc';
   //$URL = 'http://api-preprod.archives-ouvertes.fr/search/?wt=xml&q=labStructAcronym_s:"GR"&rows=100000&fq=producedDateY_i:"2014" AND producedDateY_i:"2013"&fl=title_s,label_s,producedDateY_i,uri_s,journalTitle_s,abstract_s,docType_s,doiId_s,keyword_s,authFullName_s,bookTitle_s,conferenceTitle_s,&sort=auth_sort asc';
-  $root = 'http';
+  $root = 'https';
 	if ( isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
     $root.= "s";
 	}
@@ -1431,7 +1489,7 @@ while (isset($labosur[$ii])) {
   curl_setopt($ch, CURLOPT_HEADER, 0);
   curl_setopt($ch, CURLOPT_TIMEOUT, 50); //timeout en secondes
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur.univ-rennes.fr)');
+  curl_setopt($ch, CURLOPT_USERAGENT, 'CSSD (https://halur.ccsd.cnrs.fr)');
 	if (isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 		curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
@@ -1507,21 +1565,23 @@ while (isset($labosur[$ii])) {
 	}
 	
   $anneepre = $anneedeb - 1;
-  if ($resinit == 0 && $anneepre == date('Y', time())) {//Si, en fin d'année n, il n'y a pas de résultat, on recherche sur l'année n-1
+  if ($resinit == 0 && $anneepre == date('Y', time())) {//Si, en début d'année n, il n'y a pas de résultat, on recherche sur l'année n-1
     $URL = str_replace($anneedeb, $anneepre, $URL);
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $URL);
     curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_TIMEOUT, 50); //timeout en secondes
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'SCD (https://halur.univ-rennes.fr)');
+    curl_setopt($ch, CURLOPT_USERAGENT, 'CSSD (https://halur.ccsd.cnrs.fr)');
     if (isset ($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")	{
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 		curl_setopt($ch, CURLOPT_CAINFO, "cacert.pem");
+	}else{
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	}
     $resultat = curl_exec($ch);
     $resultat = str_replace(" < "," &#60; ",$resultat);
-    curl_close($ch);
+    //curl_close($ch); > Function curl_close() is deprecated since PHP 8.5
     $dom = new DOMDocument();
     $dom->loadXML($resultat);
     if($lang == "fr") {
@@ -1734,9 +1794,9 @@ while (isset($labosur[$ii])) {
       }
 			$urlpdf = str_replace('/document', '', $pdf1[$i]);
       if (strpos($pdf1[$i], "inserm") === false) {
-        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='https://".$urlpdf."'><img alt='".$form11."' src='https://halur.univ-rennes.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
+        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='https://".$urlpdf."'><img alt='".$form11."' src='https://halur.ccsd.cnrs.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
       }else{
-        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='http://".$urlpdf."'><img alt='".$form11."' src='https://halur.univ-rennes.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
+        $pdf1[$i] = "<dd class='ValeurRes PDF' style='display: inline; margin-left: 0%;'><a target='_blank' href='http://".$urlpdf."'><img alt='".$form11."' src='https://halur.ccsd.cnrs.fr/PDF_icon.gif' style='height: 13px; border:0;' title='PDF' /></a></dd>";
       }
     }
     if (isset($typdocxml[$i])) {
@@ -1790,7 +1850,7 @@ while (isset($labosur[$ii])) {
       $url = str_replace(array("http://", "https://"), "",$uri[$i]);
       $pos = strpos($url, "/")+1;
       $url = substr($url, $pos, (strlen($url)-$pos));
-      $bibtex[$i] = "<a target='_blank' href='https://halur.univ-rennes.fr/Publis-HAL-SCD-bibtex.php?id=".$url."'><img alt='".$form10."' src='https://halur.univ-rennes.fr/BIB_icon.gif' style='height: 13px; border:0;' title='BibTex' /></a> ";
+      $bibtex[$i] = "<a target='_blank' href='https://halur.ccsd.cnrs.fr/Publis-HAL-SCD-bibtex.php?id=".$url."'><img alt='".$form10."' src='https://halur.ccsd.cnrs.fr/BIB_icon.gif' style='height: 13px; border:0;' title='BibTex' /></a> ";
       $test = str_replace("&lt;".$url."&gt;", "", $test);
       $test = str_replace(", et al. ", "", $test);
       $test = str_replace(". .", ".", $test);
@@ -1815,7 +1875,7 @@ while (isset($labosur[$ii])) {
       $repr .= "%20-%20";
       $repr .= str_replace(array("'", " ", "[", "]"), array("’", "%20", "%5B", "%5D"), strip_tags($rvnp[$i]));
       $repr .= "%20Many%20thanks%20for%20considering%20my%20request.";
-      $repr .= "'><img style='border:0;' src='https://halur.univ-rennes.fr/ReprintRequest.jpg' alt='Reprint request: Subject to availability' title='Reprint request: Subject to availability'></a>";
+      $repr .= "'><img style='border:0;' src='https://halur.ccsd.cnrs.fr/ReprintRequest.jpg' alt='Reprint request: Subject to availability' title='Reprint request: Subject to availability'></a>";
       $repr .= "<br>";
     }else{
       $repr = "&nbsp;";
