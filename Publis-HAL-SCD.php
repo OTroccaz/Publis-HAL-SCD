@@ -1827,7 +1827,7 @@ while (isset($labosur[$ii])) {
       if ($typdocxml[$i] == "REPORT") {$typdoctab[$i] = $typdocHAL[7];}
       if ($typdocxml[$i] == "IMG") {$typdoctab[$i] = $typdocHAL[8];}
       if ($typdocxml[$i] == "OUV") {$typdoctab[$i] = $typdocHAL[9];}
-      if ($typdocxml[$i] == "DOUV") {$typdoctab[$i] = $typdocHAL[10];}
+      if ($typdocxml[$i] == "PROCEEDINGS") {$typdoctab[$i] = $typdocHAL[10];}
       if ($typdocxml[$i] == "ISSUE") {$typdoctab[$i] = $typdocHAL[21];}
       if ($typdocxml[$i] == "MEM") {$typdoctab[$i] = $typdocHAL[11];}
       if ($typdocxml[$i] == "HDR") {$typdoctab[$i] = $typdocHAL[12];}
@@ -1837,6 +1837,8 @@ while (isset($labosur[$ii])) {
       if ($typdocxml[$i] == "PRESCONF") {$typdoctab[$i] = $typdocHAL[16];}
 	  if ($typdocxml[$i] == "SOFTWARE") {$typdoctab[$i] = $typdocHAL[22];}
 	  if ($typdocxml[$i] == "UNDEFINED" && $typdoc == "WORKINGPAPER") {$typdoctab[$i] = $typdocHAL[23];}
+	  if ($typdocxml[$i] == "VIDEO") {$typdoctab[$i] = $typdocHAL[24];}
+	  if ($typdocxml[$i] == "BLOG") {$typdoctab[$i] = $typdocHAL[25];}
     }
     $test = $label[$i];
     $test = str_replace("..", ".", $test);
