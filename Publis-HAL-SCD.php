@@ -420,7 +420,8 @@ if ($lang == "fr") {//français
 				"22" => "Logiciels",
 				"23" => "Working papers",
 				"24" => "Vidéos",
-				"25" => "Article de Blog Scientifique");
+				"25" => "Article de Blog Scientifique",
+				"26" => "Pré-Publications");
   $form1 = "Tri par année : de ";
   $form2 = " à ";
   $form3 = "Nombre de publications par page : " ;
@@ -477,7 +478,8 @@ if ($lang == "fr") {//français
 				"22" => "Softwares",
 				"23" => "Working papers",
 				"24" => "Videos",
-				"25" => "Scientific Blog Post");
+				"25" => "Scientific Blog Post",
+				"26" => "Pre-prints");
   $form1 = "Years: from ";
   $form2 = " to ";
   $form3 = "Number of publications per page: ";
@@ -971,6 +973,8 @@ if ($typform == $form9s) {//formulaire de recherche complet
   $text .= "<option value='VIDEO'".$txt.">".$typdocHAL['24']."</option>\r\n";
   if($typdoc == "BLOG") {$txt = " selected";}else{$txt = "";}
   $text .= "<option value='BLOG'".$txt.">".$typdocHAL['25']."</option>\r\n";
+  if($typdoc == "PREPRINT") {$txt = " selected";}else{$txt = "";}
+  $text .= "<option value='PREPRINT'".$txt.">".$typdocHAL['26']."</option>\r\n";
   $text .= "</select><br>\r\n";
   $text .= "</div>";
   //présentation bibliographique
@@ -1214,7 +1218,12 @@ while (isset($labosur[$ii])) {
 	  if ($typdocinit == 'WORKINGPAPER') {
 		$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
 	  }else{
-		$URL .= ' AND docType_s:"'.$typdocinit.'"';
+		//Cas des Pré-prints > docSubType_s
+		if ($typdocinit == 'PREPRINT') {
+			$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+		}else{
+			$URL .= ' AND docType_s:"'.$typdocinit.'"';
+		}
 	  }
     }else{
       $diffdoc = explode(",", $typdocinit);
@@ -1226,7 +1235,12 @@ while (isset($labosur[$ii])) {
 		if ($typdoc == 'WORKINGPAPER') {
 			$URL .= ' docSubType_s:"'.$typdoc.'"';
 		}else{
-			$URL .= ' docType_s:"'.$typdoc.'"';
+			//Cas des Pré-prints > docSubType_s
+			if ($typdocinit == 'PREPRINT') {
+				$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+			}else{
+				$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			}
 		}
         $idoc++;
       }
@@ -1257,7 +1271,12 @@ while (isset($labosur[$ii])) {
 		if ($typdocinit == 'WORKINGPAPER') {
 			$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
 		}else{
-			$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			//Cas des Pré-prints > docSubType_s
+			if ($typdocinit == 'PREPRINT') {
+				$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+			}else{
+				$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			}
 		}
       }else{
         $diffdoc = explode(",", $typdocinit);
@@ -1269,7 +1288,12 @@ while (isset($labosur[$ii])) {
           if ($typdoc == 'WORKINGPAPER') {
 			$URL .= ' docSubType_s:"'.$typdoc.'"';
 		  }else{
-			$URL .= ' docType_s:"'.$typdoc.'"';
+			//Cas des Pré-prints > docSubType_s
+			if ($typdocinit == 'PREPRINT') {
+				$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+			}else{
+				$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			}
 		  }
           $idoc++;
         }
@@ -1313,7 +1337,12 @@ while (isset($labosur[$ii])) {
 		if ($typdocinit == 'WORKINGPAPER') {
 			$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
 		}else{
-			$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			//Cas des Pré-prints > docSubType_s
+			if ($typdocinit == 'PREPRINT') {
+				$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+			}else{
+				$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			}
 		}
       }else{
         $diffdoc = explode(",", $typdocinit);
@@ -1325,7 +1354,12 @@ while (isset($labosur[$ii])) {
           if ($typdoc == 'WORKINGPAPER') {
 			$URL .= ' docSubType_s:"'.$typdocinit.'"';
 		  }else{
-			$URL .= ' docType_s:"'.$typdocinit.'"';
+			//Cas des Pré-prints > docSubType_s
+			if ($typdocinit == 'PREPRINT') {
+				$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+			}else{
+				$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			}
 		  }
           $idoc++;
         }
@@ -1368,7 +1402,12 @@ while (isset($labosur[$ii])) {
         if ($typdocinit == 'WORKINGPAPER') {
 			$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
 		}else{
-			$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			//Cas des Pré-prints > docSubType_s
+			if ($typdocinit == 'PREPRINT') {
+				$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+			}else{
+				$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			}
 		}
       }else{
         $diffdoc = explode(",", $typdocinit);
@@ -1380,7 +1419,12 @@ while (isset($labosur[$ii])) {
           if ($typdoc == 'WORKINGPAPER') {
 			$URL .= ' docSubType_s:"'.$typdocinit.'"';
 		  }else{
-			$URL .= ' docType_s:"'.$typdocinit.'"';
+			//Cas des Pré-prints > docSubType_s
+			if ($typdocinit == 'PREPRINT') {
+				$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+			}else{
+				$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			}
 		  }
           $idoc++;
         }
@@ -1424,7 +1468,12 @@ while (isset($labosur[$ii])) {
 		if ($typdocinit == 'WORKINGPAPER') {
 			$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
 		}else{
-			$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			//Cas des Pré-prints > docSubType_s
+			if ($typdocinit == 'PREPRINT') {
+				$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+			}else{
+				$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			}
 		}
       }else{
         $diffdoc = explode(",", $typdocinit);
@@ -1436,7 +1485,12 @@ while (isset($labosur[$ii])) {
           if ($typdoc == 'WORKINGPAPER') {
 			$URL .= ' docSubType_s:"'.$typdocinit.'"';
 		  }else{
-			$URL .= ' docType_s:"'.$typdocinit.'"';
+			//Cas des Pré-prints > docSubType_s
+			if ($typdocinit == 'PREPRINT') {
+				$URL .= ' AND docSubType_s:"'.$typdocinit.'"';
+			}else{
+				$URL .= ' AND docType_s:"'.$typdocinit.'"';
+			}
 		  }
           $idoc++;
         }
@@ -1839,6 +1893,7 @@ while (isset($labosur[$ii])) {
 	  if ($typdocxml[$i] == "UNDEFINED" && $typdoc == "WORKINGPAPER") {$typdoctab[$i] = $typdocHAL[23];}
 	  if ($typdocxml[$i] == "VIDEO") {$typdoctab[$i] = $typdocHAL[24];}
 	  if ($typdocxml[$i] == "BLOG") {$typdoctab[$i] = $typdocHAL[25];}
+	  if ($typdocxml[$i] == "UNDEFINED" && $typdoc == "PREPRINT") {$typdoctab[$i] = $typdocHAL[26];}
     }
     $test = $label[$i];
     $test = str_replace("..", ".", $test);
